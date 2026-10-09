@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 120" width="100" height="120">
+  <defs>
+    <clipPath id="riverShield">
+      <path d="M50 5 C85 5, 95 20, 95 65 C95 95, 65 112, 50 118 C35 112, 5 95, 5 65 C5 20, 15 5, 50 5 Z" />
+    </clipPath>
+  </defs>
+  <!-- Background Shield White -->
+  <path d="M50 5 C85 5, 95 20, 95 65 C95 95, 65 112, 50 118 C35 112, 5 95, 5 65 C5 20, 15 5, 50 5 Z" fill="#ffffff" stroke="#c91024" stroke-width="4"/>
+  <!-- Red Diagonal Sash (Banda Roja) -->
+  <polygon points="-20,30 85,-20 120,40 15,140" fill="#c91024" clip-path="url(#riverShield)"/>
+  <!-- Inner circular badge -->
+  <circle cx="50" cy="62" r="22" fill="#ffffff" stroke="#111111" stroke-width="1.5"/>
+  <!-- CARP text -->
+  <text x="50" y="68" font-family="'Montserrat', 'Arial Black', sans-serif" font-weight="900" font-size="13" fill="#111111" text-anchor="middle" letter-spacing="0.5">CARP</text>
+</svg>

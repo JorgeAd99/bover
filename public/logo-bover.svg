@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 60" width="240" height="60" fill="none">
+  <!-- Top Small Tagline: HISTORIA DEL SUPERCLÁSICO -->
+  <text x="5" y="16" font-family="'Montserrat', sans-serif" font-weight="800" font-size="11" fill="#8b949e" letter-spacing="3">HISTORIA DE</text>
+  
+  <!-- "BO" in Boca Colors (Navy with Gold outline/fill) -->
+  <text x="5" y="52" font-family="'Montserrat', 'Arial Black', sans-serif" font-weight="900" font-size="38" fill="#fdbb30" letter-spacing="-1">BO<tspan fill="#0b2f6d">.</tspan></text>
+  
+  <!-- "VER" in River Colors (Crisp White and Red) -->
+  <text x="80" y="52" font-family="'Montserrat', 'Arial Black', sans-serif" font-weight="900" font-size="38" fill="#c91024" letter-spacing="-1">VER</text>
+  
+  <!-- Subtle football badge dot -->
+  <circle cx="178" cy="40" r="4" fill="#ffffff"/>
+  <circle cx="178" cy="40" r="2" fill="#0b2f6d"/>
+</svg>
