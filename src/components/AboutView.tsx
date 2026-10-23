@@ -1,75 +1,61 @@
 import React from 'react';
-import { Info, Heart, Database, Shield, BookOpen } from 'lucide-react';
+import { Heart, Database, Shield, BookOpen } from 'lucide-react';
 
 export const AboutView: React.FC = () => {
   return (
-    <div className="space-y-8 animate-fadeIn max-w-4xl mx-auto">
+    <div className="space-y-6 animate-fadeIn max-w-4xl">
       
-      {/* Banner */}
-      <div className="p-6 sm:p-8 rounded-2xl bg-gradient-to-r from-[#161b22] to-[#0d1117] border border-[#30363d]">
-        <span className="text-xs font-bold uppercase tracking-wider text-[#8b949e] block mb-1">
-          Acerca de la iniciativa
-        </span>
-        <h2 className="text-2xl sm:text-3xl font-black text-white mb-3">
-          ¿Qué es Historia de Bover?
-        </h2>
-        <p className="text-sm sm:text-base text-[#8b949e] leading-relaxed">
-          <strong>Historia de Bover</strong> es una enciclopedia estadística interactiva dedicada al Superclásico del fútbol argentino entre el <strong>Club Atlético Boca Juniors</strong> y el <strong>Club Atlético River Plate</strong>.
-        </p>
-      </div>
-
-      {/* Secciones de contenido */}
-      <div className="space-y-6 text-sm text-[#8b949e] leading-relaxed">
+      {/* Secciones de contenido con medida editorial 65-75ch */}
+      <div className="grid grid-cols-1 gap-5 text-sm text-zinc-300 leading-relaxed">
         
         {/* El término Bover */}
-        <div className="p-6 rounded-2xl bg-[#161b22]/60 border border-[#30363d] space-y-3">
-          <div className="flex items-center gap-2 text-base font-bold text-white">
-            <BookOpen className="w-5 h-5 text-[#fdbb30]" />
-            <h3>El Origen del Término «Bover»</h3>
+        <article className="p-6 sm:p-7 rounded-2xl bg-[#121215] border border-white/[0.07] space-y-3">
+          <div className="flex items-center gap-2.5 text-base font-bold text-zinc-50">
+            <BookOpen className="w-5 h-5 text-[#facc15]" />
+            <h2>El Origen del Término «Bover»</h2>
           </div>
-          <p>
-            «Bover» es un acrónimo popular surgido en la cultura futbolera y en los medios argentinos (combinando <strong>BO</strong>ca y ri<strong>VER</strong>), utilizado comúnmente para referirse a la dualidad y polarización que ejercen los dos clubes más populares y laureados del país. Juntos agrupan a más del 70% de los aficionados argentinos y protagonizan una de las 5 rivalidades deportivas más intensas del planeta según medios internacionales como BBC, FourFourTwo y World Soccer.
+          <p className="text-zinc-400 max-w-[70ch]">
+            «Bover» es el acrónimo popular acuñado en la cultura futbolera argentina —combinando <strong className="text-zinc-200">BO</strong>ca y Ri<strong className="text-zinc-200">VER</strong>— para referirse a la simbiótica dualidad que ejercen las dos instituciones deportivas más convocantes y laureadas de la República Argentina. Juntos nuclean a más del 70% de la afición nacional y protagonizan uno de los espectáculos deportivos más intensos del mundo.
           </p>
-        </div>
+        </article>
 
         {/* Hermanados por el barrio de La Boca */}
-        <div className="p-6 rounded-2xl bg-[#161b22]/60 border border-[#30363d] space-y-3">
-          <div className="flex items-center gap-2 text-base font-bold text-white">
-            <Shield className="w-5 h-5 text-[#c91024]" />
-            <h3>Nacidos en el Mismo Barrio</h3>
+        <article className="p-6 sm:p-7 rounded-2xl bg-[#121215] border border-white/[0.07] space-y-3">
+          <div className="flex items-center gap-2.5 text-base font-bold text-zinc-50">
+            <Shield className="w-5 h-5 text-[#e11d48]" />
+            <h2>Nacidos en la Misma Ribera</h2>
           </div>
-          <p>
-            Curiosamente, ambos gigantes nacieron a escasas cuadras de distancia en el pintoresco barrio portuario de <strong>La Boca</strong> en Buenos Aires: River Plate el 25 de mayo de 1901 y Boca Juniors el 3 de abril de 1905. Aunque River luego se mudó a Palermo y finalmente a Núñez en 1938, el ADN barrial y portuario unió a ambas instituciones para siempre.
+          <p className="text-zinc-400 max-w-[70ch]">
+            Ambos clubes fueron fundados a escasas cuadras de distancia en el histórico barrio portuario de <strong className="text-zinc-200">La Boca</strong>, en la Ciudad de Buenos Aires: River Plate el 25 de mayo de 1901 y Boca Juniors el 3 de abril de 1905. Su primer enfrentamiento oficial tuvo lugar el 24 de agosto de 1913 en cancha de Racing Club.
           </p>
-        </div>
+        </article>
 
         {/* Fuentes y Metodología */}
-        <div className="p-6 rounded-2xl bg-[#161b22]/60 border border-[#30363d] space-y-3">
-          <div className="flex items-center gap-2 text-base font-bold text-white">
+        <article className="p-6 sm:p-7 rounded-2xl bg-[#121215] border border-white/[0.07] space-y-3">
+          <div className="flex items-center gap-2.5 text-base font-bold text-zinc-50">
             <Database className="w-5 h-5 text-emerald-400" />
-            <h3>Fuentes Estadísticas y Rigor Histórico</h3>
+            <h2>Rigor Estadístico y Fuentes Oficiales</h2>
           </div>
-          <p>
-            Los registros oficiales comprenden 266 encuentros disputados en campeonatos de Primera División (amateurs y profesionales), Copas Nacionales avaladas por AFA y competencias oficiales de la CONMEBOL (Copa Libertadores, Supercopa, Copa Sudamericana).
+          <p className="text-zinc-400 max-w-[70ch]">
+            La base de datos contempla la totalidad de los <strong className="text-zinc-200 font-numbers">266 encuentros oficiales</strong> disputados desde 1913 hasta 2026 en Ligas de Primera División (era amateur y profesional), Copas Nacionales organizadas por AFA y torneos internacionales de CONMEBOL.
           </p>
-          <ul className="list-disc pl-5 space-y-1 text-xs text-[#8b949e]">
-            <li>Asociación del Fútbol Argentino (AFA) - Registros históricos oficiales</li>
-            <li>Rec.Sport.Soccer Statistics Foundation (RSSSF) - Argentina - Superclásico</li>
-            <li>Historia de Boca (historiadeboca.com.ar)</li>
-            <li>Estadísticas de River Plate (estadisticasriver.com)</li>
+          <ul className="list-disc pl-5 space-y-1.5 text-xs text-zinc-400 pt-1">
+            <li>Asociación del Fútbol Argentino (AFA) — Actas y boletines históricos oficiales</li>
+            <li>Rec.Sport.Soccer Statistics Foundation (RSSSF) — Archivo Superclásico Argentino</li>
+            <li>Revisionismo Histórico del Fútbol Argentino y archivos hemerográficos de Boca Juniors y River Plate</li>
           </ul>
-        </div>
+        </article>
 
         {/* Inspiración en Grenal.org */}
-        <div className="p-6 rounded-2xl bg-[#161b22]/40 border border-[#30363d] space-y-2 text-xs">
-          <div className="flex items-center gap-2 font-bold text-white">
-            <Heart className="w-4 h-4 text-pink-500" />
-            <span>Inspiración de Diseño</span>
+        <article className="p-6 rounded-2xl bg-zinc-900/50 border border-white/[0.06] space-y-2 text-xs">
+          <div className="flex items-center gap-2 font-bold text-zinc-200">
+            <Heart className="w-4 h-4 text-[#e11d48]" />
+            <h3>Inspiración Editorial</h3>
           </div>
-          <p>
-            La arquitectura de información, distribución visual y experiencia de usuario está inspirada en la brillante plataforma brasileña <strong>grenal.org</strong>, referente de periodismo de datos deportivos enfocado en el clásico de Porto Alegre (Grêmio vs Internacional).
+          <p className="text-zinc-400 max-w-[70ch]">
+            La arquitectura de información está inspirada en el proyecto brasileño <strong className="text-zinc-200">grenal.org</strong>, combinando visualización de datos moderna, diseño de interfaz de alta precisión y preservación histórica del deporte sudamericano.
           </p>
-        </div>
+        </article>
 
       </div>
 

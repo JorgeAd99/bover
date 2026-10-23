@@ -4,7 +4,6 @@ import { TOTAL_STATS } from '../data/superclasicos';
 export const NumbersSection: React.FC = () => {
   const [selectedComp, setSelectedComp] = useState<string>('all');
 
-  // Cálculo de estadísticas según filtro
   const currentStats = React.useMemo(() => {
     if (selectedComp === 'all') {
       return {
@@ -37,19 +36,18 @@ export const NumbersSection: React.FC = () => {
     };
   }, [selectedComp]);
 
-  // Cálculos porcentuales para el Donut SVG
   const totalMatches = currentStats.matches;
   const bocaPct = (currentStats.bocaWins / totalMatches) * 100;
   const riverPct = (currentStats.riverWins / totalMatches) * 100;
   const drawsPct = (currentStats.draws / totalMatches) * 100;
 
-  // Cálculos para la barra de goles
   const totalGoals = currentStats.bocaGoals + currentStats.riverGoals;
   const bocaGoalsPct = (currentStats.bocaGoals / totalGoals) * 100;
   const riverGoalsPct = (currentStats.riverGoals / totalGoals) * 100;
 
-  // Donut SVG circumference calculation (r = 45 -> c = 282.74)
-  const c = 2 * Math.PI * 45;
+  // Donut SVG circumference (r = 44 -> c = 276.46)
+  const r = 44;
+  const c = 2 * Math.PI * r;
   const bocaStroke = (bocaPct / 100) * c;
   const riverStroke = (riverPct / 100) * c;
   const drawStroke = (drawsPct / 100) * c;
@@ -58,210 +56,221 @@ export const NumbersSection: React.FC = () => {
   const riverOffset = -bocaStroke;
   const drawOffset = -(bocaStroke + riverStroke);
 
-  return (
-    <section className="mb-14">
-      {/* Título de Sección idéntico a grenal.org */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-        <h2 className="text-xl sm:text-2xl font-black text-white uppercase tracking-tight flex items-center gap-2">
-          <span className="w-2.5 h-2.5 rounded-full bg-[#fdbb30]"></span>
-          Números
-        </h2>
+  const filterTabs = [
+    { id: 'all', label: 'Oficial Completo' },
+    { id: 'liga', label: 'Ligas Nacionales' },
+    { id: 'copas', label: 'Copas Nac.' },
+    { id: 'internacional', label: 'CONMEBOL' },
+  ];
 
-        {/* Mini tabs de filtro de competencia */}
-        <div className="flex items-center gap-1 bg-[#161b22] p-1 rounded-lg border border-[#30363d] self-start sm:self-auto text-xs font-semibold">
-          <button
-            onClick={() => setSelectedComp('all')}
-            className={`px-3 py-1.5 rounded-md transition ${
-              selectedComp === 'all'
-                ? 'bg-[#21262d] text-white shadow'
-                : 'text-[#8b949e] hover:text-white'
-            }`}
-          >
-            Oficial Completo
-          </button>
-          <button
-            onClick={() => setSelectedComp('liga')}
-            className={`px-3 py-1.5 rounded-md transition ${
-              selectedComp === 'liga'
-                ? 'bg-[#21262d] text-white shadow'
-                : 'text-[#8b949e] hover:text-white'
-            }`}
-          >
-            Ligas
-          </button>
-          <button
-            onClick={() => setSelectedComp('copas')}
-            className={`px-3 py-1.5 rounded-md transition ${
-              selectedComp === 'copas'
-                ? 'bg-[#21262d] text-white shadow'
-                : 'text-[#8b949e] hover:text-white'
-            }`}
-          >
-            Copas Nac.
-          </button>
-          <button
-            onClick={() => setSelectedComp('internacional')}
-            className={`px-3 py-1.5 rounded-md transition ${
-              selectedComp === 'internacional'
-                ? 'bg-[#21262d] text-white shadow'
-                : 'text-[#8b949e] hover:text-white'
-            }`}
-          >
-            Internacionales
-          </button>
+  return (
+    <section aria-labelledby="numbers-heading">
+      {/* Encabezado de Sección + Segmented Control */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+        <div>
+          <h2 id="numbers-heading" className="text-xl sm:text-2xl font-bold text-zinc-50 tracking-[-0.02em]">
+            Balance General del Historial
+          </h2>
+          <p className="text-xs sm:text-sm text-zinc-400 mt-0.5">
+            Distribución oficial de victorias, empates y goles convertidos (1913–2026)
+          </p>
+        </div>
+
+        {/* Segmented Control de Competencia */}
+        <div className="flex flex-wrap items-center gap-1 bg-zinc-900/90 p-1 rounded-xl border border-white/[0.07] self-start sm:self-auto text-xs font-medium">
+          {filterTabs.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setSelectedComp(tab.id)}
+              className={`px-3 py-1.5 rounded-lg ui-pressable ${
+                selectedComp === tab.id
+                  ? 'bg-zinc-800 text-zinc-50 font-semibold border border-white/[0.08]'
+                  : 'text-zinc-400 hover:text-zinc-200 border border-transparent'
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
         </div>
       </div>
 
-      {/* Grid Principal de Highlights idéntico a grenal.org */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6 mb-6">
+      {/* Bento Grid Principal */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 mb-4">
         
-        {/* Columna Izquierda: 3 Tiles de Resultados */}
-        <div className="flex flex-col gap-3">
+        {/* Columna Izquierda (7 cols): 3 Tarjetas Comparativas */}
+        <div className="lg:col-span-7 flex flex-col justify-between gap-3">
           
-          {/* Tile Victorias Boca */}
-          <div className="p-4 sm:p-5 rounded-xl border border-[#0b2f6d]/60 bg-gradient-to-r from-[#0b2f6d]/30 to-[#071a3d]/20 backdrop-blur flex items-center justify-between hover:border-[#fdbb30]/50 transition group">
-            <div className="flex items-center gap-3">
-              <img src="/crest-boca.svg" alt="Boca Juniors" className="w-8 h-10 object-contain drop-shadow" />
+          {/* Tarjeta Boca Juniors */}
+          <div className="p-5 rounded-2xl border border-white/[0.08] bg-[linear-gradient(135deg,rgba(10,37,88,0.28)_0%,rgba(18,18,21,0.9)_65%)] flex items-center justify-between group hover:border-[#facc15]/35 transition-colors">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-xl bg-[#0a2558]/50 border border-[#facc15]/25 flex items-center justify-center p-2 shrink-0">
+                <img src="/crest-boca.svg" alt="Boca Juniors" className="w-full h-full object-contain" />
+              </div>
               <div>
-                <span className="block text-xs uppercase tracking-wider font-bold text-[#fdbb30]">
-                  Boca Juniors
+                <div className="flex items-center gap-2">
+                  <span className="text-base font-bold text-zinc-50">
+                    Boca Juniors
+                  </span>
+                  <span className="text-[11px] font-semibold px-2 py-0.5 rounded-md bg-[#facc15]/15 text-[#facc15] border border-[#facc15]/25">
+                    +{currentStats.bocaWins - currentStats.riverWins > 0 ? currentStats.bocaWins - currentStats.riverWins : 0} historial
+                  </span>
+                </div>
+                <span className="text-xs sm:text-sm text-zinc-400 block mt-0.5">
+                  Partidos ganados oficialmente
                 </span>
-                <span className="text-sm text-[#8b949e] font-medium">Victorias de Boca</span>
               </div>
             </div>
             <div className="text-right">
-              <span className="font-numbers text-3xl sm:text-4xl font-extrabold text-white tracking-tight group-hover:text-[#fdbb30] transition">
+              <span className="font-numbers text-3xl sm:text-4xl font-black text-[#facc15] tracking-tight block leading-none">
                 {currentStats.bocaWins}
               </span>
-              <span className="block text-[11px] text-[#8b949e] font-numbers">
-                {bocaPct.toFixed(1)}%
+              <span className="inline-block mt-1 text-xs text-zinc-400 font-numbers font-medium">
+                {bocaPct.toFixed(1)}% del total
               </span>
             </div>
           </div>
 
-          {/* Tile Victorias River */}
-          <div className="p-4 sm:p-5 rounded-xl border border-[#c91024]/50 bg-gradient-to-r from-[#c91024]/20 to-[#630812]/15 backdrop-blur flex items-center justify-between hover:border-[#c91024] transition group">
-            <div className="flex items-center gap-3">
-              <img src="/crest-river.svg" alt="River Plate" className="w-8 h-10 object-contain drop-shadow" />
+          {/* Tarjeta River Plate */}
+          <div className="p-5 rounded-2xl border border-white/[0.08] bg-[linear-gradient(135deg,rgba(225,29,72,0.2)_0%,rgba(18,18,21,0.9)_65%)] flex items-center justify-between group hover:border-[#e11d48]/40 transition-colors">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-xl bg-[#e11d48]/15 border border-[#e11d48]/30 flex items-center justify-center p-2 shrink-0">
+                <img src="/crest-river.svg" alt="River Plate" className="w-full h-full object-contain" />
+              </div>
               <div>
-                <span className="block text-xs uppercase tracking-wider font-bold text-[#ff4d5a]">
+                <span className="text-base font-bold text-zinc-50 block">
                   River Plate
                 </span>
-                <span className="text-sm text-[#8b949e] font-medium">Victorias de River</span>
+                <span className="text-xs sm:text-sm text-zinc-400 block mt-0.5">
+                  Partidos ganados oficialmente
+                </span>
               </div>
             </div>
             <div className="text-right">
-              <span className="font-numbers text-3xl sm:text-4xl font-extrabold text-white tracking-tight group-hover:text-[#ff4d5a] transition">
+              <span className="font-numbers text-3xl sm:text-4xl font-black text-[#fb7185] tracking-tight block leading-none">
                 {currentStats.riverWins}
               </span>
-              <span className="block text-[11px] text-[#8b949e] font-numbers">
-                {riverPct.toFixed(1)}%
+              <span className="inline-block mt-1 text-xs text-zinc-400 font-numbers font-medium">
+                {riverPct.toFixed(1)}% del total
               </span>
             </div>
           </div>
 
-          {/* Tile Empates */}
-          <div className="p-4 sm:p-5 rounded-xl border border-[#30363d] bg-[#161b22]/70 backdrop-blur flex items-center justify-between hover:border-[#484f58] transition group">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-10 rounded flex items-center justify-center bg-[#21262d] text-[#8b949e] font-bold text-sm">
+          {/* Tarjeta Empates */}
+          <div className="p-5 rounded-2xl border border-white/[0.07] bg-[#121215] flex items-center justify-between hover:border-white/[0.15] transition-colors">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-xl bg-zinc-800/80 border border-white/[0.07] flex items-center justify-center text-zinc-300 font-numbers font-bold text-lg shrink-0">
                 =
               </div>
               <div>
-                <span className="block text-xs uppercase tracking-wider font-bold text-[#8b949e]">
-                  Tablas
+                <span className="text-base font-bold text-zinc-200 block">
+                  Empates
                 </span>
-                <span className="text-sm text-[#8b949e] font-medium">Partidos Empatados</span>
+                <span className="text-xs sm:text-sm text-zinc-400 block mt-0.5">
+                  Igualdad en el marcador
+                </span>
               </div>
             </div>
             <div className="text-right">
-              <span className="font-numbers text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+              <span className="font-numbers text-3xl sm:text-4xl font-black text-zinc-100 tracking-tight block leading-none">
                 {currentStats.draws}
               </span>
-              <span className="block text-[11px] text-[#8b949e] font-numbers">
-                {drawsPct.toFixed(1)}%
+              <span className="inline-block mt-1 text-xs text-zinc-400 font-numbers font-medium">
+                {drawsPct.toFixed(1)}% del total
               </span>
             </div>
           </div>
 
         </div>
 
-        {/* Columna Derecha: Gráfico Doughnut + Total Partidos */}
-        <div className="p-6 rounded-xl border border-[#30363d] bg-[#161b22]/50 backdrop-blur flex flex-col items-center justify-center relative overflow-hidden">
+        {/* Columna Derecha (5 cols): Visualización Proporcional Anillo */}
+        <div className="lg:col-span-5 p-6 rounded-2xl border border-white/[0.07] bg-[#121215] flex flex-col items-center justify-between">
           
-          <div className="relative w-44 h-44 flex items-center justify-center">
-            {/* SVG Donut Chart interactivo */}
+          <div className="w-full flex items-center justify-between text-xs text-zinc-400 font-medium mb-2">
+            <span>Proporción de resultados</span>
+            <span className="font-numbers text-zinc-300 font-semibold">100% verificado</span>
+          </div>
+
+          <div className="relative w-44 h-44 my-2 flex items-center justify-center">
             <svg className="w-full h-full -rotate-90 transform" viewBox="0 0 100 100">
-              {/* Círculo fondo */}
               <circle
                 cx="50"
                 cy="50"
-                r="45"
+                r={r}
                 fill="transparent"
-                stroke="#21262d"
-                strokeWidth="9"
+                stroke="#27272a"
+                strokeWidth="8"
               />
-              {/* Boca slice (Azul y Oro) */}
+              {/* Boca slice (Oro) */}
               <circle
                 cx="50"
                 cy="50"
-                r="45"
+                r={r}
                 fill="transparent"
-                stroke="#0b2f6d"
-                strokeWidth="9"
+                stroke="#facc15"
+                strokeWidth="8"
                 strokeDasharray={`${bocaStroke} ${c - bocaStroke}`}
                 strokeDashoffset={bocaOffset}
-                className="transition-all duration-700 ease-out"
+                className="transition-[stroke-dasharray,stroke-dashoffset] duration-500 ease-out"
               />
-              {/* River slice (Rojo) */}
+              {/* River slice (Carmesí) */}
               <circle
                 cx="50"
                 cy="50"
-                r="45"
+                r={r}
                 fill="transparent"
-                stroke="#c91024"
-                strokeWidth="9"
+                stroke="#e11d48"
+                strokeWidth="8"
                 strokeDasharray={`${riverStroke} ${c - riverStroke}`}
                 strokeDashoffset={riverOffset}
-                className="transition-all duration-700 ease-out"
+                className="transition-[stroke-dasharray,stroke-dashoffset] duration-500 ease-out"
               />
-              {/* Empates slice (Gris oscuro) */}
+              {/* Empates slice (Zinc) */}
               <circle
                 cx="50"
                 cy="50"
-                r="45"
+                r={r}
                 fill="transparent"
-                stroke="#484f58"
-                strokeWidth="9"
+                stroke="#52525b"
+                strokeWidth="8"
                 strokeDasharray={`${drawStroke} ${c - drawStroke}`}
                 strokeDashoffset={drawOffset}
-                className="transition-all duration-700 ease-out"
+                className="transition-[stroke-dasharray,stroke-dashoffset] duration-500 ease-out"
               />
             </svg>
 
             {/* Centro del Donut */}
             <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-              <span className="font-numbers text-3xl sm:text-4xl font-black text-white">
+              <span className="font-numbers text-4xl font-black text-zinc-50 tracking-tight leading-none">
                 {currentStats.matches}
               </span>
-              <span className="text-[11px] font-bold uppercase tracking-wider text-[#8b949e]">
+              <span className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400 mt-1">
                 Partidos
               </span>
             </div>
           </div>
 
-          {/* Leyenda debajo del donut */}
-          <div className="flex items-center justify-center gap-5 mt-4 pt-4 border-t border-[#21262d] w-full text-xs font-semibold">
-            <div className="flex items-center gap-1.5">
-              <span className="w-3 h-3 rounded-full bg-[#0b2f6d] border border-[#fdbb30]"></span>
-              <span className="text-[#8b949e]">Boca ({bocaPct.toFixed(0)}%)</span>
+          {/* Leyenda de precisión */}
+          <div className="grid grid-cols-3 gap-2 pt-4 border-t border-white/[0.07] w-full text-center text-xs">
+            <div className="p-2 rounded-lg bg-zinc-900/70">
+              <div className="flex items-center justify-center gap-1.5 mb-0.5">
+                <span className="w-2 h-2 rounded-full bg-[#facc15]" />
+                <span className="font-semibold text-zinc-200">Boca</span>
+              </div>
+              <span className="font-numbers text-zinc-400 text-[11px]">{bocaPct.toFixed(1)}%</span>
             </div>
-            <div className="flex items-center gap-1.5">
-              <span className="w-3 h-3 rounded-full bg-[#c91024] border border-white"></span>
-              <span className="text-[#8b949e]">River ({riverPct.toFixed(0)}%)</span>
+            <div className="p-2 rounded-lg bg-zinc-900/70">
+              <div className="flex items-center justify-center gap-1.5 mb-0.5">
+                <span className="w-2 h-2 rounded-full bg-[#e11d48]" />
+                <span className="font-semibold text-zinc-200">River</span>
+              </div>
+              <span className="font-numbers text-zinc-400 text-[11px]">{riverPct.toFixed(1)}%</span>
             </div>
-            <div className="flex items-center gap-1.5">
-              <span className="w-3 h-3 rounded-full bg-[#484f58]"></span>
-              <span className="text-[#8b949e]">Empates ({drawsPct.toFixed(0)}%)</span>
+            <div className="p-2 rounded-lg bg-zinc-900/70">
+              <div className="flex items-center justify-center gap-1.5 mb-0.5">
+                <span className="w-2 h-2 rounded-full bg-zinc-500" />
+                <span className="font-semibold text-zinc-200">Empate</span>
+              </div>
+              <span className="font-numbers text-zinc-400 text-[11px]">{drawsPct.toFixed(1)}%</span>
             </div>
           </div>
 
@@ -269,32 +278,37 @@ export const NumbersSection: React.FC = () => {
 
       </div>
 
-      {/* Barra de Comparación de Goles idéntica a grenal.org */}
-      <div className="p-5 rounded-xl border border-[#30363d] bg-[#161b22]/50">
-        <div className="flex items-center justify-between text-xs sm:text-sm font-bold mb-2.5">
-          <div className="flex items-center gap-2 text-[#fdbb30]">
-            <img src="/crest-boca.svg" alt="Boca" className="w-4 h-5 object-contain" />
-            <span>{currentStats.bocaGoals} goles de Boca Juniors</span>
-            <span className="text-[11px] text-[#8b949e]">({bocaGoalsPct.toFixed(1)}%)</span>
+      {/* Barra Comparativa de Goles */}
+      <div className="p-5 rounded-2xl border border-white/[0.07] bg-[#121215]">
+        <div className="flex items-center justify-between text-xs sm:text-sm mb-3">
+          <div className="flex items-center gap-2.5">
+            <img src="/crest-boca.svg" alt="Boca Juniors" className="w-4 h-5 object-contain" />
+            <span className="font-bold text-zinc-100 font-numbers">{currentStats.bocaGoals} goles</span>
+            <span className="text-xs text-zinc-400 font-numbers">({bocaGoalsPct.toFixed(1)}%)</span>
           </div>
-          <div className="flex items-center gap-2 text-[#ff4d5a]">
-            <span className="text-[11px] text-[#8b949e]">({riverGoalsPct.toFixed(1)}%)</span>
-            <span>{currentStats.riverGoals} goles de River Plate</span>
-            <img src="/crest-river.svg" alt="River" className="w-4 h-5 object-contain" />
+
+          <span className="text-[11px] uppercase tracking-wider font-semibold text-zinc-400 hidden sm:inline">
+             {totalGoals} goles totales convertidos
+          </span>
+
+          <div className="flex items-center gap-2.5">
+            <span className="text-xs text-zinc-400 font-numbers">({riverGoalsPct.toFixed(1)}%)</span>
+            <span className="font-bold text-zinc-100 font-numbers">{currentStats.riverGoals} goles</span>
+            <img src="/crest-river.svg" alt="River Plate" className="w-4 h-5 object-contain" />
           </div>
         </div>
 
-        {/* Proportional visual bar */}
-        <div className="w-full h-3.5 bg-[#21262d] rounded-full overflow-hidden flex p-0.5">
+        {/* Barra segmentada con separación limpia */}
+        <div className="w-full h-3 bg-zinc-900 rounded-full overflow-hidden flex gap-1 p-0.5 border border-white/[0.05]">
           <div
             style={{ width: `${bocaGoalsPct}%` }}
-            className="h-full bg-gradient-to-r from-[#0b2f6d] to-[#1d4ed8] rounded-l-full transition-all duration-700"
-            title={`Boca: ${currentStats.bocaGoals} goles (${bocaGoalsPct.toFixed(1)}%)`}
+            className="h-full bg-[#facc15] rounded-l-full transition-[width] duration-500 ease-out"
+            title={`Boca Juniors: ${currentStats.bocaGoals} goles (${bocaGoalsPct.toFixed(1)}%)`}
           />
           <div
             style={{ width: `${riverGoalsPct}%` }}
-            className="h-full bg-gradient-to-r from-[#e11d48] to-[#c91024] rounded-r-full transition-all duration-700"
-            title={`River: ${currentStats.riverGoals} goles (${riverGoalsPct.toFixed(1)}%)`}
+            className="h-full bg-[#e11d48] rounded-r-full transition-[width] duration-500 ease-out"
+            title={`River Plate: ${currentStats.riverGoals} goles (${riverGoalsPct.toFixed(1)}%)`}
           />
         </div>
       </div>

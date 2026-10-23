@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { TOP_PLAYERS } from '../data/players';
 import { PlayerStats, TeamType } from '../types';
-import { Award, Flame, Search, Filter } from 'lucide-react';
+import { Search } from 'lucide-react';
 
 interface PlayersListViewProps {
   onSelectPlayer: (player: PlayerStats) => void;
@@ -21,41 +21,31 @@ export const PlayersListView: React.FC<PlayersListViewProps> = ({ onSelectPlayer
   return (
     <div className="space-y-8 animate-fadeIn">
       
-      {/* Banner de Jugadores */}
-      <div className="p-6 rounded-2xl bg-gradient-to-r from-[#161b22] to-[#0d1117] border border-[#30363d]">
-        <h2 className="text-2xl sm:text-3xl font-black text-white mb-2">
-          Ranking Histórico de Jugadores
-        </h2>
-        <p className="text-sm text-[#8b949e] max-w-2xl">
-          Goleadores máximos, hombres récords de presencias y figuras inolvidables que dejaron su sello en los 113 años de Superclásicos.
-        </p>
-      </div>
-
       {/* Controles de filtro y búsqueda */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pb-4 border-b border-[#21262d]">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
         
-        {/* Filtro por club */}
-        <div className="flex items-center gap-1 bg-[#161b22] p-1 rounded-xl border border-[#30363d] text-xs font-bold w-full sm:w-auto">
+        {/* Segmented Control por club */}
+        <div className="flex items-center gap-1 bg-[#121215] p-1 rounded-xl border border-white/[0.07] text-xs font-medium w-full sm:w-auto">
           <button
             onClick={() => setFilterTeam('all')}
-            className={`flex-1 sm:flex-none px-3.5 py-1.5 rounded-lg transition ${
-              filterTeam === 'all' ? 'bg-[#21262d] text-white shadow' : 'text-[#8b949e] hover:text-white'
+            className={`flex-1 sm:flex-none px-4 py-2 rounded-lg ui-pressable ${
+              filterTeam === 'all' ? 'bg-zinc-800 text-zinc-50 font-semibold border border-white/[0.08]' : 'text-zinc-400 hover:text-zinc-200'
             }`}
           >
-            Todos
+            Todos los Clubes
           </button>
           <button
             onClick={() => setFilterTeam('boca')}
-            className={`flex-1 sm:flex-none px-3.5 py-1.5 rounded-lg transition ${
-              filterTeam === 'boca' ? 'bg-[#0b2f6d] text-[#fdbb30] shadow' : 'text-[#8b949e] hover:text-white'
+            className={`flex-1 sm:flex-none px-4 py-2 rounded-lg ui-pressable ${
+              filterTeam === 'boca' ? 'bg-[#0a2558] text-[#facc15] font-semibold border border-[#facc15]/30' : 'text-zinc-400 hover:text-zinc-200'
             }`}
           >
             Boca Juniors
           </button>
           <button
             onClick={() => setFilterTeam('river')}
-            className={`flex-1 sm:flex-none px-3.5 py-1.5 rounded-lg transition ${
-              filterTeam === 'river' ? 'bg-[#c91024] text-white shadow' : 'text-[#8b949e] hover:text-white'
+            className={`flex-1 sm:flex-none px-4 py-2 rounded-lg ui-pressable ${
+              filterTeam === 'river' ? 'bg-[#e11d48] text-white font-semibold border border-white/20' : 'text-zinc-400 hover:text-zinc-200'
             }`}
           >
             River Plate
@@ -64,73 +54,77 @@ export const PlayersListView: React.FC<PlayersListViewProps> = ({ onSelectPlayer
 
         {/* Buscador local */}
         <div className="relative w-full sm:w-72">
-          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#8b949e]" />
+          <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Buscar futbolista..."
-            className="w-full bg-[#161b22] border border-[#30363d] rounded-xl pl-9 pr-4 py-2 text-xs text-white placeholder-[#8b949e] focus:outline-none focus:border-white/40"
+            placeholder="Filtrar por nombre de jugador..."
+            className="w-full bg-[#121215] border border-white/[0.08] rounded-xl pl-10 pr-4 py-2.5 text-xs sm:text-sm text-zinc-100 placeholder-zinc-500 focus:outline-none focus:border-white/[0.22] transition-colors"
           />
         </div>
 
       </div>
 
-      {/* Listado de tarjetas de jugadores */}
+      {/* Grid de tarjetas de jugadores */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {filteredPlayers.map((player, idx) => {
           const isBoca = player.team === 'boca';
           const isRiver = player.team === 'river';
 
           return (
-            <div
+            <article
               key={player.id}
               onClick={() => onSelectPlayer(player)}
-              className="p-5 rounded-2xl border border-[#30363d] bg-[#161b22]/70 hover:bg-[#161b22] hover:border-[#8b949e]/50 cursor-pointer transition shadow-sm group flex flex-col justify-between"
+              className="p-5 rounded-2xl border border-white/[0.07] bg-[#121215] hover:bg-[#16161a] cursor-pointer ui-card-interactive group flex flex-col justify-between"
             >
               <div>
                 <div className="flex items-start justify-between gap-3 mb-3">
                   <div className="flex items-center gap-3">
-                    <img
-                      src={isBoca ? '/crest-boca.svg' : isRiver ? '/crest-river.svg' : '/logo-bover.svg'}
-                      alt={player.team}
-                      className="w-8 h-10 object-contain drop-shadow"
-                    />
+                    <div className="w-11 h-11 rounded-xl bg-zinc-900 border border-white/[0.06] flex items-center justify-center p-1.5 shrink-0">
+                      <img
+                        src={isBoca ? '/crest-boca.svg' : isRiver ? '/crest-river.svg' : '/logo-bover.svg'}
+                        alt={player.team}
+                        className="w-full h-full object-contain"
+                      />
+                    </div>
                     <div>
-                      <h3 className="font-black text-base text-white group-hover:text-[#fdbb30] transition leading-tight">
+                      <h3 className="font-bold text-base text-zinc-50 group-hover:text-[#facc15] transition-colors leading-tight">
                         {player.name}
                       </h3>
-                      <span className="text-xs text-[#8b949e] font-medium block">
-                        {player.position}
+                      <span className="text-xs text-zinc-400 font-normal block mt-0.5">
+                        {player.position} · {player.era}
                       </span>
                     </div>
                   </div>
 
-                  <span className="font-numbers text-xs font-black px-2 py-0.5 rounded bg-[#21262d] text-[#8b949e]">
+                  <span className="font-numbers text-xs font-bold px-2 py-0.5 rounded-md bg-zinc-900 text-zinc-400 border border-white/[0.06]">
                     #{idx + 1}
                   </span>
                 </div>
 
-                <p className="text-xs text-[#8b949e] line-clamp-2 mt-2 leading-relaxed">
+                <p className="text-xs text-zinc-400 line-clamp-2 mt-2 leading-relaxed">
                   {player.topFact}
                 </p>
               </div>
 
               {/* Estadísticas en pie */}
-              <div className="mt-5 pt-3 border-t border-[#21262d] flex items-center justify-between text-xs">
-                <span className="font-semibold text-[#8b949e]">
-                  {player.era}
-                </span>
-                <div className="flex items-center gap-3">
-                  <span className="font-numbers text-white font-bold">
-                    {player.matches} <span className="text-[#8b949e] font-normal text-[10px]">PJ</span>
-                  </span>
-                  <span className="font-numbers text-[#fdbb30] font-bold">
-                    {player.goals} <span className="text-[#8b949e] font-normal text-[10px]">Goles</span>
-                  </span>
+              <div className="mt-5 pt-3.5 border-t border-white/[0.06] flex items-center justify-between text-xs font-numbers">
+                <div className="flex items-center gap-4">
+                  <div>
+                    <span className="text-zinc-100 font-bold text-sm">{player.matches}</span>
+                    <span className="text-zinc-400 ml-1 text-[11px]">PJ</span>
+                  </div>
+                  <div>
+                    <span className="text-[#facc15] font-bold text-sm">{player.goals}</span>
+                    <span className="text-zinc-400 ml-1 text-[11px]">Goles</span>
+                  </div>
                 </div>
+                <span className="text-emerald-400 font-semibold text-xs">
+                  {player.wins} PG
+                </span>
               </div>
-            </div>
+            </article>
           );
         })}
       </div>

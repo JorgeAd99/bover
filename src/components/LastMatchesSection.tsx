@@ -13,132 +13,134 @@ export const LastMatchesSection: React.FC<LastMatchesSectionProps> = ({
   onSelectMatch,
   onViewAllMatches
 }) => {
-  // Mostramos los últimos 4 partidos
   const recentMatches = matches.slice(0, 4);
 
   return (
-    <section className="mb-14">
-      {/* Título idéntico a grenal.org */}
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl sm:text-2xl font-black text-white uppercase tracking-tight flex items-center gap-2">
-          <span className="w-2.5 h-2.5 rounded-full bg-[#c91024]"></span>
-          Últimos Superclásicos
-        </h2>
+    <section aria-labelledby="recent-matches-heading">
+      {/* Encabezado */}
+      <div className="flex items-end justify-between mb-6">
+        <div>
+          <h2 id="recent-matches-heading" className="text-xl sm:text-2xl font-bold text-zinc-50 tracking-[-0.02em]">
+            Últimos Superclásicos Disputados
+          </h2>
+          <p className="text-xs sm:text-sm text-zinc-400 mt-0.5">
+            Equipo local siempre exhibido a la izquierda según registro oficial
+          </p>
+        </div>
 
         <button
           onClick={onViewAllMatches}
-          className="text-xs sm:text-sm font-bold text-[#8b949e] hover:text-white flex items-center gap-1.5 transition group"
+          className="text-xs sm:text-sm font-medium text-zinc-300 hover:text-zinc-50 flex items-center gap-1.5 ui-pressable group shrink-0"
         >
-          <span>Ver todas las partidas</span>
-          <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition" />
+          <span>Archivo completo</span>
+          <ArrowRight className="w-4 h-4 text-zinc-400 group-hover:text-zinc-100 group-hover:translate-x-0.5 transition-transform" />
         </button>
       </div>
 
-      {/* Grid de Cards idéntico a grenal.org con equipo local siempre a la izquierda */}
+      {/* Grid de Partidos Recientes */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {recentMatches.map((m) => {
           const isRiverHome = m.homeTeam === 'river';
 
-          // Datos del equipo LOCAL (a la izquierda)
+          // Equipo LOCAL (Izquierda)
           const homeTeamName = isRiverHome ? 'River Plate' : 'Boca Juniors';
           const homeCrest = isRiverHome ? '/crest-river.svg' : '/crest-boca.svg';
           const homeScore = isRiverHome ? m.riverScore : m.bocaScore;
           const homeGoals = isRiverHome ? m.riverGoals : m.bocaGoals;
           const isHomeWinner = isRiverHome ? m.winner === 'river' : m.winner === 'boca';
-          const homeWinColor = isRiverHome ? 'text-[#ff4d5a]' : 'text-[#fdbb30]';
-          const homeHoverColor = isRiverHome ? 'group-hover:text-[#ff4d5a]' : 'group-hover:text-[#fdbb30]';
+          const homeWinColor = isRiverHome ? 'text-[#fb7185]' : 'text-[#facc15]';
 
-          // Datos del equipo VISITANTE (a la derecha)
+          // Equipo VISITANTE (Derecha)
           const awayTeamName = isRiverHome ? 'Boca Juniors' : 'River Plate';
           const awayCrest = isRiverHome ? '/crest-boca.svg' : '/crest-river.svg';
           const awayScore = isRiverHome ? m.bocaScore : m.riverScore;
           const awayGoals = isRiverHome ? m.bocaGoals : m.riverGoals;
           const isAwayWinner = isRiverHome ? m.winner === 'boca' : m.winner === 'river';
-          const awayWinColor = isRiverHome ? 'text-[#fdbb30]' : 'text-[#ff4d5a]';
-          const awayHoverColor = isRiverHome ? 'group-hover:text-[#fdbb30]' : 'group-hover:text-[#ff4d5a]';
+          const awayWinColor = isRiverHome ? 'text-[#facc15]' : 'text-[#fb7185]';
 
           return (
-            <div
+            <article
               key={m.id}
               onClick={() => onSelectMatch(m)}
-              className="p-5 rounded-xl border border-[#30363d] bg-[#161b22]/70 hover:bg-[#161b22] hover:border-[#8b949e]/50 cursor-pointer transition shadow-sm group flex flex-col justify-between"
+              className="p-5 rounded-2xl border border-white/[0.07] bg-[#121215] hover:bg-[#16161a] cursor-pointer ui-card-interactive group flex flex-col justify-between"
             >
-              {/* Header de la tarjeta */}
-              <div className="flex items-center justify-between pb-3 mb-4 border-b border-[#21262d] text-xs font-semibold">
-                <span className="text-[#8b949e] flex items-center gap-1.5">
-                  <span className="font-bold text-white">Superclásico #{m.number}</span>
-                  <span>•</span>
+              {/* Meta Header */}
+              <div className="flex items-center justify-between pb-3.5 mb-4 border-b border-white/[0.06] text-xs">
+                <div className="flex items-center gap-2 text-zinc-400">
+                  <span className="font-numbers font-bold text-zinc-200 bg-zinc-800/90 px-2 py-0.5 rounded-md border border-white/[0.06]">
+                    #{m.number}
+                  </span>
                   <span>{m.formattedDate}</span>
-                </span>
-                <span className="px-2 py-0.5 rounded text-[10px] bg-[#21262d] text-[#8b949e] border border-[#30363d] truncate max-w-[140px]">
+                </div>
+                <span className="px-2.5 py-0.5 rounded-md text-[11px] font-medium bg-zinc-900 text-zinc-300 border border-white/[0.07] truncate max-w-[165px]">
                   {m.tournament}
                 </span>
               </div>
 
-              {/* Marcador central: LOCAL A LA IZQUIERDA, VISITANTE A LA DERECHA */}
-              <div className="flex items-center justify-between py-2 px-2">
+              {/* Marcador Central: LOCAL (Izquierda) vs VISITANTE (Derecha) */}
+              <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3 py-1">
                 
                 {/* Equipo LOCAL (Izquierda) */}
-                <div className={`flex items-center gap-3 ${isHomeWinner ? 'opacity-100' : 'opacity-85'}`}>
-                  <figure className="w-11 h-13 flex-shrink-0 flex items-center justify-center">
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="w-11 h-11 rounded-xl bg-zinc-900/90 border border-white/[0.06] flex items-center justify-center p-1.5 shrink-0">
                     <img
                       src={homeCrest}
                       alt={homeTeamName}
-                      className="w-10 h-12 object-contain drop-shadow"
+                      className="w-full h-full object-contain"
                     />
-                  </figure>
-                  <div>
-                    <div className="flex items-center gap-1.5">
-                      <span className={`font-bold text-sm block text-white ${homeHoverColor} transition`}>
+                  </div>
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      <span className={`font-bold text-sm truncate ${isHomeWinner ? 'text-zinc-50' : 'text-zinc-300'}`}>
                         {homeTeamName}
                       </span>
-                      <span className="text-[9px] uppercase tracking-wider font-extrabold px-1.5 py-0.2 rounded bg-emerald-950/70 text-emerald-400 border border-emerald-500/30">
+                      <span className="text-[9px] uppercase tracking-wider font-bold px-1.5 py-0.5 rounded bg-emerald-950/60 text-emerald-400 border border-emerald-500/25 shrink-0">
                         Local
                       </span>
                     </div>
-                    <span className="text-xs text-[#8b949e] line-clamp-1 max-w-[130px] sm:max-w-[150px]">
+                    <span className="text-xs text-zinc-400 truncate block mt-0.5">
                       {homeGoals.length > 0 ? homeGoals.map(g => g.player).join(', ') : 'Sin goles'}
                     </span>
                   </div>
                 </div>
 
-                {/* Marcador Numérico Central (Local : Visitante) */}
-                <div className="flex flex-col items-center">
-                  <div className="flex items-center gap-2.5 font-numbers text-2xl sm:text-3xl font-extrabold px-3 py-1 bg-[#0d1117] rounded-lg border border-[#21262d]">
-                    <span className={isHomeWinner ? homeWinColor : 'text-white'}>
+                {/* Marcador Numérico Central */}
+                <div className="flex flex-col items-center shrink-0">
+                  <div className="flex items-center gap-2.5 font-numbers text-2xl sm:text-[28px] font-black px-3.5 py-1.5 bg-[#09090b] rounded-xl border border-white/[0.08]">
+                    <span className={isHomeWinner ? homeWinColor : 'text-zinc-100'}>
                       {homeScore}
                     </span>
-                    <span className="text-[#484f58] text-xl font-normal">:</span>
-                    <span className={isAwayWinner ? awayWinColor : 'text-white'}>
+                    <span className="text-zinc-600 text-lg font-normal">:</span>
+                    <span className={isAwayWinner ? awayWinColor : 'text-zinc-100'}>
                       {awayScore}
                     </span>
                   </div>
                   {m.penalties && (
-                    <span className="text-[10px] font-numbers text-[#8b949e] mt-1">
-                      pen. {isRiverHome ? m.penalties.river : m.penalties.boca} - {isRiverHome ? m.penalties.boca : m.penalties.river}
+                    <span className="text-[10px] font-numbers font-medium text-emerald-400 mt-1">
+                      Pen. {isRiverHome ? m.penalties.river : m.penalties.boca}–{isRiverHome ? m.penalties.boca : m.penalties.river}
                     </span>
                   )}
                 </div>
 
                 {/* Equipo VISITANTE (Derecha) */}
-                <div className={`flex items-center gap-3 text-right flex-row-reverse ${isAwayWinner ? 'opacity-100' : 'opacity-85'}`}>
-                  <figure className="w-11 h-13 flex-shrink-0 flex items-center justify-center">
+                <div className="flex items-center gap-3 text-right flex-row-reverse min-w-0">
+                  <div className="w-11 h-11 rounded-xl bg-zinc-900/90 border border-white/[0.06] flex items-center justify-center p-1.5 shrink-0">
                     <img
                       src={awayCrest}
                       alt={awayTeamName}
-                      className="w-10 h-12 object-contain drop-shadow"
+                      className="w-full h-full object-contain"
                     />
-                  </figure>
-                  <div>
-                    <div className="flex items-center justify-end gap-1.5">
-                      <span className="text-[9px] uppercase tracking-wider font-extrabold px-1.5 py-0.2 rounded bg-[#21262d] text-[#8b949e] border border-[#30363d]">
+                  </div>
+                  <div className="min-w-0">
+                    <div className="flex items-center justify-end gap-1.5 flex-wrap">
+                      <span className="text-[9px] uppercase tracking-wider font-bold px-1.5 py-0.5 rounded bg-zinc-800/80 text-zinc-400 border border-white/[0.06] shrink-0">
                         Visita
                       </span>
-                      <span className={`font-bold text-sm block text-white ${awayHoverColor} transition`}>
+                      <span className={`font-bold text-sm truncate ${isAwayWinner ? 'text-zinc-50' : 'text-zinc-300'}`}>
                         {awayTeamName}
                       </span>
                     </div>
-                    <span className="text-xs text-[#8b949e] line-clamp-1 max-w-[130px] sm:max-w-[150px]">
+                    <span className="text-xs text-zinc-400 truncate block mt-0.5">
                       {awayGoals.length > 0 ? awayGoals.map(g => g.player).join(', ') : 'Sin goles'}
                     </span>
                   </div>
@@ -146,26 +148,26 @@ export const LastMatchesSection: React.FC<LastMatchesSectionProps> = ({
 
               </div>
 
-              {/* Footer con info de estadio */}
-              <div className="pt-4 mt-2 border-t border-[#21262d] flex items-center justify-between text-[11px] text-[#8b949e]">
-                <span className="truncate max-w-[200px] sm:max-w-[280px]">{m.stadium}</span>
-                <span className="text-xs font-semibold text-white/60 group-hover:text-white transition flex items-center gap-1">
-                  Ver ficha completa <ArrowRight className="w-3 h-3" />
+              {/* Footer de tarjeta */}
+              <div className="pt-3.5 mt-4 border-t border-white/[0.06] flex items-center justify-between text-xs text-zinc-400">
+                <span className="truncate max-w-[210px] sm:max-w-[280px]">{m.stadium}</span>
+                <span className="font-medium text-zinc-300 group-hover:text-zinc-50 flex items-center gap-1 transition-colors">
+                  Ficha técnica <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
                 </span>
               </div>
-            </div>
+            </article>
           );
         })}
       </div>
 
-      {/* Botón inferior Ver todas las partidas */}
+      {/* CTA Inferior */}
       <div className="mt-5 text-center">
         <button
           onClick={onViewAllMatches}
-          className="w-full sm:w-auto px-8 py-3 bg-[#161b22] hover:bg-[#21262d] border border-[#30363d] rounded-xl text-sm font-bold text-white transition inline-flex items-center justify-center gap-2"
+          className="w-full sm:w-auto px-7 py-3 bg-[#121215] hover:bg-zinc-800/90 border border-white/[0.09] hover:border-white/[0.18] rounded-xl text-xs sm:text-sm font-semibold text-zinc-100 ui-pressable inline-flex items-center justify-center gap-2.5"
         >
-          <Trophy className="w-4 h-4 text-[#fdbb30]" />
-          <span>Ver todas las partidas históricas ({matches.length})</span>
+          <Trophy className="w-4 h-4 text-[#facc15]" />
+          <span>Explorar los {matches.length} Superclásicos oficiales</span>
         </button>
       </div>
     </section>

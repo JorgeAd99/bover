@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { SQUAD_SELECTIONS } from '../data/historicalXI';
 import { PitchNode } from '../types';
-import { Trophy, Info, X } from 'lucide-react';
+import { Trophy, X } from 'lucide-react';
 
 export const PitchField: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'bover' | 'boca' | 'river'>('bover');
@@ -10,101 +10,100 @@ export const PitchField: React.FC = () => {
   const currentSelection = SQUAD_SELECTIONS[activeTab];
 
   return (
-    <section className="mb-14">
-      {/* Título de la sección idéntico a grenal.org */}
+    <section aria-labelledby="pitch-heading">
+      {/* Encabezado de Sección */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
-          <h2 className="text-xl sm:text-2xl font-black text-white uppercase tracking-tight flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
-            Selección Bover
+          <h2 id="pitch-heading" className="text-xl sm:text-2xl font-bold text-zinc-50 tracking-[-0.02em]">
+            Once Ideal Histórico
           </h2>
-          <p className="text-xs sm:text-sm text-[#8b949e] mt-1">
-            Los mejores once de la historia del clásico en formación táctica interactiva.
+          <p className="text-xs sm:text-sm text-zinc-400 mt-0.5">
+            Seleccioná cada futbolista en la pizarra táctica para inspeccionar sus registros
           </p>
         </div>
 
-        {/* Tabs de selección de equipo */}
-        <div className="flex items-center gap-1 bg-[#161b22] p-1 rounded-xl border border-[#30363d] self-start sm:self-auto text-xs font-bold">
+        {/* Segmented Control de Alineaciones */}
+        <div className="flex items-center gap-1 bg-zinc-900/90 p-1 rounded-xl border border-white/[0.07] self-start sm:self-auto text-xs font-medium">
           <button
             onClick={() => { setActiveTab('bover'); setSelectedPlayer(null); }}
-            className={`px-3.5 py-2 rounded-lg transition ${
+            className={`px-3.5 py-1.5 rounded-lg ui-pressable ${
               activeTab === 'bover'
-                ? 'bg-[#21262d] text-white shadow'
-                : 'text-[#8b949e] hover:text-white'
+                ? 'bg-zinc-800 text-zinc-50 font-semibold border border-white/[0.08]'
+                : 'text-zinc-400 hover:text-zinc-200 border border-transparent'
             }`}
           >
-            Selección Bover (Ideal)
+            XI Bover Combinado
           </button>
           <button
             onClick={() => { setActiveTab('boca'); setSelectedPlayer(null); }}
-            className={`px-3.5 py-2 rounded-lg transition ${
+            className={`px-3.5 py-1.5 rounded-lg ui-pressable ${
               activeTab === 'boca'
-                ? 'bg-[#0b2f6d] text-[#fdbb30] shadow border border-[#fdbb30]/30'
-                : 'text-[#8b949e] hover:text-white'
+                ? 'bg-[#0a2558] text-[#facc15] font-semibold border border-[#facc15]/30'
+                : 'text-zinc-400 hover:text-zinc-200 border border-transparent'
             }`}
           >
-            Selección Xeneize
+            XI Boca Juniors
           </button>
           <button
             onClick={() => { setActiveTab('river'); setSelectedPlayer(null); }}
-            className={`px-3.5 py-2 rounded-lg transition ${
+            className={`px-3.5 py-1.5 rounded-lg ui-pressable ${
               activeTab === 'river'
-                ? 'bg-[#c91024] text-white shadow border border-white/30'
-                : 'text-[#8b949e] hover:text-white'
+                ? 'bg-[#e11d48] text-white font-semibold border border-white/25'
+                : 'text-zinc-400 hover:text-zinc-200 border border-transparent'
             }`}
           >
-            Selección Millonaria
+            XI River Plate
           </button>
         </div>
       </div>
 
       {/* Contenedor del Campo Táctico */}
-      <div className="relative rounded-2xl border border-[#30363d] bg-gradient-to-b from-[#0e2417] via-[#091b10] to-[#06120b] p-4 sm:p-8 overflow-hidden shadow-2xl">
+      <div className="relative rounded-2xl border border-white/[0.08] bg-[#121215] p-4 sm:p-8 overflow-hidden">
         
-        {/* Título de la formación actual */}
-        <div className="absolute top-4 left-6 z-10 flex items-center gap-2 bg-black/60 backdrop-blur px-3 py-1.5 rounded-full border border-white/10 text-xs font-semibold text-white">
-          <Trophy className="w-3.5 h-3.5 text-[#fdbb30]" />
-          <span>{currentSelection.title}</span>
-          <span className="text-[#8b949e]">({currentSelection.formation})</span>
+        {/* Badge superior de la formación */}
+        <div className="flex items-center justify-between mb-4">
+          <div className="inline-flex items-center gap-2 bg-zinc-900 px-3.5 py-1.5 rounded-xl border border-white/[0.07] text-xs font-medium text-zinc-200">
+            <Trophy className="w-3.5 h-3.5 text-[#facc15]" />
+            <span className="font-semibold">{currentSelection.title}</span>
+            <span className="text-zinc-400 font-numbers">({currentSelection.formation})</span>
+          </div>
+          <span className="text-xs text-zinc-400 hidden sm:inline">
+            Clic en un dorsal para ver detalle
+          </span>
         </div>
 
-        {/* Cancha de fútbol SVG con líneas reglamentarias */}
-        <div className="relative w-full max-w-2xl mx-auto aspect-[3/4] sm:aspect-[4/5] rounded-xl border-2 border-emerald-500/30 overflow-hidden shadow-inner bg-[#0d2a1a]">
+        {/* Cancha de fútbol SVG con estética broadcast oscura y limpia */}
+        <div className="relative w-full max-w-2xl mx-auto aspect-[3/4] sm:aspect-[4/5] rounded-2xl border border-emerald-500/25 overflow-hidden bg-[#0a1f14]">
           
-          {/* Césped a rayas */}
-          <div className="absolute inset-0 flex flex-col pointer-events-none opacity-30">
+          {/* Franjas sutiles de césped */}
+          <div className="absolute inset-0 flex flex-col pointer-events-none">
             {[...Array(10)].map((_, i) => (
               <div
                 key={i}
-                className={`flex-1 ${i % 2 === 0 ? 'bg-emerald-900/30' : 'bg-emerald-950/20'}`}
+                className={`flex-1 ${i % 2 === 0 ? 'bg-emerald-950/25' : 'bg-transparent'}`}
               />
             ))}
           </div>
 
-          {/* Marcaciones de cancha reglamentarias SVG */}
-          <svg className="absolute inset-0 w-full h-full pointer-events-none stroke-white/40 fill-none" strokeWidth="1.5">
-            {/* Línea media */}
+          {/* Trazado geométrico reglamentario SVG */}
+          <svg className="absolute inset-0 w-full h-full pointer-events-none stroke-emerald-300/25 fill-none" strokeWidth="1.5">
             <line x1="0" y1="50%" x2="100%" y2="50%" />
-            {/* Círculo central */}
             <circle cx="50%" cy="50%" r="15%" />
-            <circle cx="50%" cy="50%" r="2" fill="white" className="fill-white/60" />
+            <circle cx="50%" cy="50%" r="2.5" className="fill-emerald-300/40" />
 
-            {/* Área y arco superior (Arco Rival) */}
             <rect x="22%" y="0" width="56%" height="16%" />
             <rect x="36%" y="0" width="28%" height="6%" />
             <path d="M 40% 16% A 10% 10% 0 0 0 60% 16%" />
 
-            {/* Área y arco inferior (Arco Propio) */}
             <rect x="22%" y="84%" width="56%" height="16%" />
             <rect x="36%" y="94%" width="28%" height="6%" />
             <path d="M 40% 84% A 10% 10% 0 0 1 60% 84%" />
 
-            {/* Puntos de penal */}
-            <circle cx="50%" cy="11%" r="2" fill="white" className="fill-white/60" />
-            <circle cx="50%" cy="89%" r="2" fill="white" className="fill-white/60" />
+            <circle cx="50%" cy="11%" r="2" className="fill-emerald-300/40" />
+            <circle cx="50%" cy="89%" r="2" className="fill-emerald-300/40" />
           </svg>
 
-          {/* Nodos de Jugadores colocados con coordenadas exactas */}
+          {/* Nodos de Jugadores */}
           {currentSelection.players.map((p) => {
             const isBoca = p.team === 'boca';
             const isSelected = selectedPlayer?.id === p.id;
@@ -118,29 +117,27 @@ export const PitchField: React.FC = () => {
                   top: `${p.y}%`,
                   transform: 'translate(-50%, -50%)',
                 }}
-                className={`absolute z-20 flex flex-col items-center group transition transform active:scale-90 focus:outline-none`}
+                className="absolute z-20 flex flex-col items-center group focus:outline-none"
                 title={`${p.name} - ${p.role}`}
               >
-                {/* Badge / Pill del Jugador estilo grenal.org */}
                 <div
-                  className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full flex flex-col items-center justify-center font-bold text-xs shadow-lg transition duration-200 border-2 ${
+                  className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full flex flex-col items-center justify-center font-bold text-xs transition-transform duration-150 border-2 ${
                     isBoca
-                      ? 'bg-[#0b2f6d] text-[#fdbb30] border-[#fdbb30] hover:shadow-[#fdbb30]/40'
-                      : 'bg-[#c91024] text-white border-white hover:shadow-red-500/40'
-                  } ${isSelected ? 'ring-4 ring-emerald-400 scale-110 shadow-xl' : 'group-hover:scale-105'}`}
+                      ? 'bg-[#0a2558] text-[#facc15] border-[#facc15]'
+                      : 'bg-[#e11d48] text-white border-white'
+                  } ${isSelected ? 'ring-4 ring-emerald-400/70 scale-110' : 'group-hover:scale-105 group-active:scale-95'}`}
                 >
-                  <span className="text-[10px] sm:text-[11px] uppercase tracking-tighter leading-none font-black">
+                  <span className="text-[10px] sm:text-[11px] uppercase tracking-tight leading-none font-black">
                     {p.posCode}
                   </span>
                   {p.number && (
-                    <span className="text-[9px] opacity-80 leading-none">
+                    <span className="text-[9px] font-numbers opacity-85 leading-none mt-0.5">
                       #{p.number}
                     </span>
                   )}
                 </div>
 
-                {/* Nombre del Jugador bajo el badge */}
-                <span className="mt-1 px-2 py-0.5 rounded-full text-[11px] sm:text-xs font-bold text-white bg-black/75 backdrop-blur border border-white/20 whitespace-nowrap shadow group-hover:bg-white group-hover:text-black transition">
+                <span className="mt-1.5 px-2.5 py-0.5 rounded-md text-[11px] sm:text-xs font-semibold text-zinc-100 bg-zinc-950/90 border border-white/[0.12] whitespace-nowrap group-hover:bg-zinc-100 group-hover:text-zinc-950 transition-colors">
                   {p.name}
                 </span>
               </button>
@@ -149,54 +146,55 @@ export const PitchField: React.FC = () => {
 
         </div>
 
-        {/* Modal / Ficha Informativa del Jugador Seleccionado */}
+        {/* Panel Inferior de Jugador Seleccionado */}
         {selectedPlayer && (
-          <div className="mt-6 p-4 sm:p-5 rounded-xl bg-[#161b22]/95 border border-[#30363d] backdrop-blur animate-fadeIn relative">
+          <div className="mt-6 p-5 rounded-2xl bg-zinc-900/90 border border-white/[0.09] animate-fadeIn relative">
             <button
               onClick={() => setSelectedPlayer(null)}
-              className="absolute top-3 right-3 p-1.5 text-[#8b949e] hover:text-white rounded-lg hover:bg-[#21262d]"
+              className="absolute top-3.5 right-3.5 p-1.5 text-zinc-400 hover:text-zinc-100 rounded-lg hover:bg-zinc-800 ui-pressable"
               aria-label="Cerrar detalle"
             >
               <X className="w-4 h-4" />
             </button>
 
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div className="flex items-center gap-3">
-                <img
-                  src={selectedPlayer.team === 'boca' ? '/crest-boca.svg' : '/crest-river.svg'}
-                  alt={selectedPlayer.team}
-                  className="w-10 h-12 object-contain"
-                />
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pr-6">
+              <div className="flex items-center gap-3.5">
+                <div className="w-12 h-12 rounded-xl bg-zinc-950 border border-white/[0.07] flex items-center justify-center p-2 shrink-0">
+                  <img
+                    src={selectedPlayer.team === 'boca' ? '/crest-boca.svg' : '/crest-river.svg'}
+                    alt={selectedPlayer.team}
+                    className="w-full h-full object-contain"
+                  />
+                </div>
                 <div>
                   <div className="flex items-center gap-2">
-                    <h4 className="text-base sm:text-lg font-black text-white">
+                    <h4 className="text-base sm:text-lg font-bold text-zinc-50">
                       {selectedPlayer.name}
                     </h4>
-                    <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-[#21262d] text-[#8b949e]">
+                    <span className="px-2 py-0.5 rounded-md text-[11px] font-medium bg-zinc-800 text-zinc-300 border border-white/[0.06]">
                       {selectedPlayer.role}
                     </span>
                   </div>
-                  <p className="text-xs sm:text-sm text-[#8b949e] mt-0.5">
+                  <p className="text-xs sm:text-sm text-zinc-400 mt-0.5">
                     {selectedPlayer.keyFact}
                   </p>
                 </div>
               </div>
 
-              {/* Estadísticas en superclásicos */}
-              <div className="flex items-center gap-4 self-start sm:self-auto border-t sm:border-t-0 sm:border-l border-[#30363d] pt-3 sm:pt-0 sm:pl-4">
-                <div className="text-center">
-                  <span className="block font-numbers text-xl font-black text-white">
+              <div className="flex items-center gap-6 self-start sm:self-auto border-t sm:border-t-0 sm:border-l border-white/[0.08] pt-3 sm:pt-0 sm:pl-6">
+                <div>
+                  <span className="block font-numbers text-xl font-black text-zinc-50">
                     {selectedPlayer.superclasicosCount}
                   </span>
-                  <span className="text-[10px] uppercase font-bold text-[#8b949e]">
-                    Superclásicos
+                  <span className="text-[11px] font-medium text-zinc-400">
+                    Partidos
                   </span>
                 </div>
-                <div className="text-center">
-                  <span className="block font-numbers text-xl font-black text-[#fdbb30]">
+                <div>
+                  <span className="block font-numbers text-xl font-black text-[#facc15]">
                     {selectedPlayer.goalsCount}
                   </span>
-                  <span className="text-[10px] uppercase font-bold text-[#8b949e]">
+                  <span className="text-[11px] font-medium text-zinc-400">
                     Goles
                   </span>
                 </div>

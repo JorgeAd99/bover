@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { SUPERCLASICOS, TOTAL_STATS } from '../data/superclasicos';
 import { Match, CompetitionCategory } from '../types';
-import { Calendar, Filter, Trophy, ChevronRight } from 'lucide-react';
+import { Calendar, Filter, Trophy, ArrowRight } from 'lucide-react';
 
 interface DecadeFilterViewProps {
   onSelectMatch: (match: Match) => void;
@@ -15,7 +15,6 @@ export const DecadeFilterView: React.FC<DecadeFilterViewProps> = ({ onSelectMatc
   const decadesList = TOTAL_STATS.byDecade;
   const currentDecadeData = decadesList.find(d => d.decade === selectedDecade) || decadesList[0];
 
-  // Filtramos partidos
   const filteredMatches = SUPERCLASICOS.filter(m => {
     const matchesDecade = m.decade === selectedDecade;
     const matchesCategory = selectedCategory === 'all' || m.competitionCategory === selectedCategory;
@@ -26,35 +25,17 @@ export const DecadeFilterView: React.FC<DecadeFilterViewProps> = ({ onSelectMatc
   return (
     <div className="space-y-8 animate-fadeIn">
       
-      {/* Resumen dinámico de la década estilo grenal.org */}
-      <div className="p-6 rounded-2xl bg-gradient-to-r from-[#161b22] to-[#0d1117] border border-[#30363d] shadow-sm">
-        <span className="text-xs font-bold uppercase tracking-wider text-[#8b949e] block mb-1">
-          Década Seleccionada
-        </span>
-        <h2 className="text-2xl sm:text-3xl font-black text-white mb-2">
-          {currentDecadeData.label}
-        </h2>
-        <p className="text-sm text-[#8b949e] leading-relaxed max-w-3xl">
-          En los {currentDecadeData.matches} superclásicos disputados en este período, se registraron{' '}
-          <strong className="text-[#fdbb30]">{currentDecadeData.bocaWins} victorias de Boca Juniors</strong>,{' '}
-          <strong className="text-[#ff4d5a]">{currentDecadeData.riverWins} victorias de River Plate</strong> y{' '}
-          <strong className="text-white">{currentDecadeData.draws} empates</strong>. Fueron{' '}
-          {currentDecadeData.bocaGoals} goles para Boca y {currentDecadeData.riverGoals} para River.
-        </p>
-      </div>
-
-      {/* Selector de Décadas idéntico a grenal.org */}
+      {/* Selector de Décadas Horizontal */}
       <div>
-        <h3 className="text-xs uppercase tracking-wider font-bold text-[#8b949e] mb-3">
-          Superclásicos por década
-        </h3>
-
-        {/* Mobile Select dropdown */}
         <div className="block sm:hidden mb-4">
+          <label htmlFor="decade-select" className="block text-xs font-medium text-zinc-400 mb-1.5">
+            Seleccionar período histórico
+          </label>
           <select
+            id="decade-select"
             value={selectedDecade}
             onChange={(e) => setSelectedDecade(e.target.value)}
-            className="w-full bg-[#161b22] border border-[#30363d] rounded-xl px-4 py-3 text-sm text-white font-semibold focus:outline-none"
+            className="w-full bg-[#121215] border border-white/[0.09] rounded-xl px-4 py-3 text-sm text-zinc-100 font-semibold focus:outline-none"
           >
             {decadesList.map((d) => (
               <option key={d.decade} value={d.decade}>
@@ -64,23 +45,24 @@ export const DecadeFilterView: React.FC<DecadeFilterViewProps> = ({ onSelectMatc
           </select>
         </div>
 
-        {/* Desktop Buttons Pills */}
-        <div className="hidden sm:flex flex-wrap gap-2">
+        <div className="hidden sm:flex flex-wrap gap-1.5 p-1.5 rounded-2xl bg-[#121215] border border-white/[0.07]">
           {decadesList.map((d) => {
             const isSelected = selectedDecade === d.decade;
             return (
               <button
                 key={d.decade}
                 onClick={() => setSelectedDecade(d.decade)}
-                className={`px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${
+                className={`px-3 py-2 rounded-xl text-xs font-semibold ui-pressable flex items-center gap-1.5 ${
                   isSelected
-                    ? 'bg-white text-black shadow-lg scale-105'
-                    : 'bg-[#161b22] hover:bg-[#21262d] text-[#8b949e] hover:text-white border border-[#30363d]'
+                    ? 'bg-zinc-100 text-zinc-950 shadow-xs'
+                    : 'text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800/60'
                 }`}
               >
-                <Calendar className="w-3.5 h-3.5" />
-                <span>{d.decade}</span>
-                <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-extrabold ${isSelected ? 'bg-black/10 text-black' : 'bg-[#21262d] text-[#8b949e]'}`}>
+                <Calendar className="w-3.5 h-3.5 opacity-75" />
+                <span className="font-numbers">{d.decade}</span>
+                <span className={`text-[10px] px-1.5 py-0.5 rounded-md font-numbers font-bold ${
+                  isSelected ? 'bg-zinc-950/15 text-zinc-950' : 'bg-zinc-800/90 text-zinc-400'
+                }`}>
                   {d.matches}
                 </span>
               </button>
@@ -89,64 +71,89 @@ export const DecadeFilterView: React.FC<DecadeFilterViewProps> = ({ onSelectMatc
         </div>
       </div>
 
-      {/* Filtros secundarios: Torneo y Resultado */}
-      <div className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-[#21262d] text-xs">
+      {/* Resumen de la Década Seleccionada */}
+      <div className="p-6 rounded-2xl bg-[#121215] border border-white/[0.07] flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+        <div className="space-y-1.5 max-w-2xl">
+          <h2 className="text-xl sm:text-2xl font-bold text-zinc-50 tracking-[-0.02em]">
+            {currentDecadeData.label}
+          </h2>
+          <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed">
+            Sobre <strong className="text-zinc-200 font-numbers">{currentDecadeData.matches} partidos oficiales</strong> disputados en la década, Boca Juniors obtuvo{' '}
+            <strong className="text-[#facc15] font-numbers">{currentDecadeData.bocaWins} triunfos</strong> ({currentDecadeData.bocaGoals} goles), River Plate logró{' '}
+            <strong className="text-[#fb7185] font-numbers">{currentDecadeData.riverWins} victorias</strong> ({currentDecadeData.riverGoals} goles) y empataron en{' '}
+            <strong className="text-zinc-200 font-numbers">{currentDecadeData.draws} ocasiones</strong>.
+          </p>
+        </div>
+
+        {/* Mini KPIs de la década */}
+        <div className="grid grid-cols-3 gap-2.5 shrink-0 font-numbers text-center">
+          <div className="px-4 py-2.5 rounded-xl bg-zinc-900 border border-[#facc15]/20">
+            <span className="text-xl font-black text-[#facc15] block leading-none">{currentDecadeData.bocaWins}</span>
+            <span className="text-[10px] font-semibold uppercase text-zinc-400 mt-1 block">Boca</span>
+          </div>
+          <div className="px-4 py-2.5 rounded-xl bg-zinc-900 border border-white/[0.07]">
+            <span className="text-xl font-black text-zinc-200 block leading-none">{currentDecadeData.draws}</span>
+            <span className="text-[10px] font-semibold uppercase text-zinc-400 mt-1 block">Empates</span>
+          </div>
+          <div className="px-4 py-2.5 rounded-xl bg-zinc-900 border border-[#e11d48]/25">
+            <span className="text-xl font-black text-[#fb7185] block leading-none">{currentDecadeData.riverWins}</span>
+            <span className="text-[10px] font-semibold uppercase text-zinc-400 mt-1 block">River</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Controles de Filtro Secundarios */}
+      <div className="flex flex-wrap items-center justify-between gap-3 text-xs">
         
         {/* Filtro Competencia */}
-        <div className="flex items-center gap-1 bg-[#161b22] p-1 rounded-lg border border-[#30363d]">
-          <span className="text-[#8b949e] px-2 font-semibold flex items-center gap-1">
-            <Filter className="w-3 h-3" /> Torneo:
+        <div className="flex flex-wrap items-center gap-1 bg-[#121215] p-1 rounded-xl border border-white/[0.07]">
+          <span className="text-zinc-400 px-2.5 font-medium flex items-center gap-1.5">
+            <Filter className="w-3.5 h-3.5" /> Competencia:
           </span>
-          <button
-            onClick={() => setSelectedCategory('all')}
-            className={`px-2.5 py-1 rounded transition ${selectedCategory === 'all' ? 'bg-[#21262d] text-white font-bold' : 'text-[#8b949e] hover:text-white'}`}
-          >
-            Todos
-          </button>
-          <button
-            onClick={() => setSelectedCategory('liga')}
-            className={`px-2.5 py-1 rounded transition ${selectedCategory === 'liga' ? 'bg-[#21262d] text-white font-bold' : 'text-[#8b949e] hover:text-white'}`}
-          >
-            Liga
-          </button>
-          <button
-            onClick={() => setSelectedCategory('copa_nacional')}
-            className={`px-2.5 py-1 rounded transition ${selectedCategory === 'copa_nacional' ? 'bg-[#21262d] text-white font-bold' : 'text-[#8b949e] hover:text-white'}`}
-          >
-            Copas
-          </button>
-          <button
-            onClick={() => setSelectedCategory('internacional')}
-            className={`px-2.5 py-1 rounded transition ${selectedCategory === 'internacional' ? 'bg-[#21262d] text-white font-bold' : 'text-[#8b949e] hover:text-white'}`}
-          >
-            Libertadores / Int.
-          </button>
+          {([
+            { id: 'all', label: 'Todas' },
+            { id: 'liga', label: 'Ligas' },
+            { id: 'copa_nacional', label: 'Copas Nac.' },
+            { id: 'internacional', label: 'CONMEBOL' },
+          ] as const).map((cat) => (
+            <button
+              key={cat.id}
+              onClick={() => setSelectedCategory(cat.id)}
+              className={`px-3 py-1.5 rounded-lg ui-pressable ${
+                selectedCategory === cat.id
+                  ? 'bg-zinc-800 text-zinc-50 font-semibold border border-white/[0.08]'
+                  : 'text-zinc-400 hover:text-zinc-200'
+              }`}
+            >
+              {cat.label}
+            </button>
+          ))}
         </div>
 
         {/* Filtro Ganador */}
-        <div className="flex items-center gap-1 bg-[#161b22] p-1 rounded-lg border border-[#30363d]">
-          <span className="text-[#8b949e] px-2 font-semibold">Resultado:</span>
+        <div className="flex flex-wrap items-center gap-1 bg-[#121215] p-1 rounded-xl border border-white/[0.07]">
+          <span className="text-zinc-400 px-2.5 font-medium">Resultado:</span>
           <button
             onClick={() => setSelectedWinner('all')}
-            className={`px-2.5 py-1 rounded transition ${selectedWinner === 'all' ? 'bg-[#21262d] text-white font-bold' : 'text-[#8b949e] hover:text-white'}`}
+            className={`px-3 py-1.5 rounded-lg ui-pressable ${selectedWinner === 'all' ? 'bg-zinc-800 text-zinc-50 font-semibold border border-white/[0.08]' : 'text-zinc-400 hover:text-zinc-200'}`}
           >
             Todos
           </button>
           <button
             onClick={() => setSelectedWinner('boca')}
-            className={`px-2.5 py-1 rounded transition ${selectedWinner === 'boca' ? 'bg-[#0b2f6d] text-[#fdbb30] font-bold' : 'text-[#8b949e] hover:text-white'}`}
+            className={`px-3 py-1.5 rounded-lg ui-pressable ${selectedWinner === 'boca' ? 'bg-[#0a2558] text-[#facc15] font-semibold border border-[#facc15]/30' : 'text-zinc-400 hover:text-zinc-200'}`}
           >
-            Ganó Boca
+            Boca Juniors
           </button>
           <button
             onClick={() => setSelectedWinner('river')}
-            className={`px-2.5 py-1 rounded transition ${selectedWinner === 'river' ? 'bg-[#c91024] text-white font-bold' : 'text-[#8b949e] hover:text-white'}`}
+            className={`px-3 py-1.5 rounded-lg ui-pressable ${selectedWinner === 'river' ? 'bg-[#e11d48] text-white font-semibold border border-white/20' : 'text-zinc-400 hover:text-zinc-200'}`}
           >
-            Ganó River
+            River Plate
           </button>
           <button
             onClick={() => setSelectedWinner('draw')}
-            className={`px-2.5 py-1 rounded transition ${selectedWinner === 'draw' ? 'bg-[#30363d] text-white font-bold' : 'text-[#8b949e] hover:text-white'}`}
+            className={`px-3 py-1.5 rounded-lg ui-pressable ${selectedWinner === 'draw' ? 'bg-zinc-700 text-white font-semibold' : 'text-zinc-400 hover:text-zinc-200'}`}
           >
             Empate
           </button>
@@ -154,106 +161,109 @@ export const DecadeFilterView: React.FC<DecadeFilterViewProps> = ({ onSelectMatc
 
       </div>
 
-      {/* Listado de Partidos idéntico a grenal.org con equipo Local a la izquierda */}
+      {/* Listado de Partidos con Equipo Local siempre a la izquierda */}
       {filteredMatches.length === 0 ? (
-        <div className="py-16 text-center text-[#8b949e] bg-[#161b22]/30 rounded-2xl border border-[#30363d]">
-          <Trophy className="w-8 h-8 mx-auto mb-2 opacity-50" />
-          <p className="font-semibold text-white">No hay partidos registrados con los filtros seleccionados.</p>
-          <p className="text-xs mt-1">Probá cambiando el filtro de torneo o resultado.</p>
+        <div className="py-16 text-center text-zinc-400 bg-[#121215] rounded-2xl border border-white/[0.07]">
+          <Trophy className="w-8 h-8 mx-auto mb-2.5 text-zinc-600" />
+          <p className="font-semibold text-zinc-200">No se registran encuentros con estos criterios en la década.</p>
+          <p className="text-xs mt-1">Probá seleccionando otra competencia o resultado.</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {filteredMatches.map((m) => {
             const isRiverHome = m.homeTeam === 'river';
 
-            // Datos equipo LOCAL (a la izquierda)
+            // Equipo LOCAL (Izquierda)
             const homeTeamName = isRiverHome ? 'River Plate' : 'Boca Juniors';
             const homeCrest = isRiverHome ? '/crest-river.svg' : '/crest-boca.svg';
             const homeScore = isRiverHome ? m.riverScore : m.bocaScore;
             const homeGoals = isRiverHome ? m.riverGoals : m.bocaGoals;
             const isHomeWinner = isRiverHome ? m.winner === 'river' : m.winner === 'boca';
-            const homeWinColor = isRiverHome ? 'text-[#ff4d5a]' : 'text-[#fdbb30]';
-            const homeHoverColor = isRiverHome ? 'group-hover:text-[#ff4d5a]' : 'group-hover:text-[#fdbb30]';
+            const homeWinColor = isRiverHome ? 'text-[#fb7185]' : 'text-[#facc15]';
 
-            // Datos equipo VISITANTE (a la derecha)
+            // Equipo VISITANTE (Derecha)
             const awayTeamName = isRiverHome ? 'Boca Juniors' : 'River Plate';
             const awayCrest = isRiverHome ? '/crest-boca.svg' : '/crest-river.svg';
             const awayScore = isRiverHome ? m.bocaScore : m.riverScore;
             const awayGoals = isRiverHome ? m.bocaGoals : m.riverGoals;
             const isAwayWinner = isRiverHome ? m.winner === 'boca' : m.winner === 'river';
-            const awayWinColor = isRiverHome ? 'text-[#fdbb30]' : 'text-[#ff4d5a]';
-            const awayHoverColor = isRiverHome ? 'group-hover:text-[#fdbb30]' : 'group-hover:text-[#ff4d5a]';
+            const awayWinColor = isRiverHome ? 'text-[#facc15]' : 'text-[#fb7185]';
 
             return (
-              <div
+              <article
                 key={m.id}
                 onClick={() => onSelectMatch(m)}
-                className="p-5 rounded-xl border border-[#30363d] bg-[#161b22]/70 hover:bg-[#161b22] hover:border-[#8b949e]/50 cursor-pointer transition shadow-sm group flex flex-col justify-between"
+                className="p-5 rounded-2xl border border-white/[0.07] bg-[#121215] hover:bg-[#16161a] cursor-pointer ui-card-interactive group flex flex-col justify-between"
               >
                 {/* Header */}
-                <div className="flex items-center justify-between pb-3 mb-4 border-b border-[#21262d] text-xs font-semibold">
-                  <span className="text-[#8b949e] flex items-center gap-1.5">
-                    <span className="font-bold text-white">Superclásico #{m.number}</span>
-                    <span>•</span>
+                <div className="flex items-center justify-between pb-3.5 mb-4 border-b border-white/[0.06] text-xs">
+                  <div className="flex items-center gap-2 text-zinc-400">
+                    <span className="font-numbers font-bold text-zinc-200 bg-zinc-800/90 px-2 py-0.5 rounded-md border border-white/[0.06]">
+                      #{m.number}
+                    </span>
                     <span>{m.formattedDate}</span>
-                  </span>
-                  <span className="px-2 py-0.5 rounded text-[10px] bg-[#21262d] text-[#8b949e] border border-[#30363d] truncate max-w-[150px]">
+                  </div>
+                  <span className="px-2.5 py-0.5 rounded-md text-[11px] font-medium bg-zinc-900 text-zinc-300 border border-white/[0.07] truncate max-w-[165px]">
                     {m.tournament}
                   </span>
                 </div>
 
                 {/* Marcador Central: LOCAL a la izquierda, VISITANTE a la derecha */}
-                <div className="flex items-center justify-between py-2 px-1">
+                <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3 py-1">
                   
                   {/* LOCAL (Izquierda) */}
-                  <div className="flex items-center gap-3">
-                    <img src={homeCrest} alt={homeTeamName} className="w-10 h-12 object-contain drop-shadow" />
-                    <div>
-                      <div className="flex items-center gap-1.5">
-                        <span className={`font-bold text-sm block text-white ${homeHoverColor} transition`}>
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="w-11 h-11 rounded-xl bg-zinc-900/90 border border-white/[0.06] flex items-center justify-center p-1.5 shrink-0">
+                      <img src={homeCrest} alt={homeTeamName} className="w-full h-full object-contain" />
+                    </div>
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <span className={`font-bold text-sm truncate ${isHomeWinner ? 'text-zinc-50' : 'text-zinc-300'}`}>
                           {homeTeamName}
                         </span>
-                        <span className="text-[9px] uppercase tracking-wider font-extrabold px-1.5 py-0.2 rounded bg-emerald-950/70 text-emerald-400 border border-emerald-500/30">
+                        <span className="text-[9px] uppercase tracking-wider font-bold px-1.5 py-0.5 rounded bg-emerald-950/60 text-emerald-400 border border-emerald-500/25 shrink-0">
                           Local
                         </span>
                       </div>
-                      <span className="text-xs text-[#8b949e] line-clamp-1 max-w-[130px] sm:max-w-[150px]">
+                      <span className="text-xs text-zinc-400 truncate block mt-0.5">
                         {homeGoals.length > 0 ? homeGoals.map(g => g.player).join(', ') : 'Sin goles'}
                       </span>
                     </div>
                   </div>
 
                   {/* Marcador Numérico */}
-                  <div className="flex flex-col items-center">
-                    <div className="flex items-center gap-2 font-numbers text-2xl font-black px-3 py-1 bg-[#0d1117] rounded-lg border border-[#21262d]">
-                      <span className={isHomeWinner ? homeWinColor : 'text-white'}>
+                  <div className="flex flex-col items-center shrink-0">
+                    <div className="flex items-center gap-2.5 font-numbers text-2xl sm:text-[28px] font-black px-3.5 py-1.5 bg-[#09090b] rounded-xl border border-white/[0.08]">
+                      <span className={isHomeWinner ? homeWinColor : 'text-zinc-100'}>
                         {homeScore}
                       </span>
-                      <span className="text-[#484f58]">:</span>
-                      <span className={isAwayWinner ? awayWinColor : 'text-white'}>
+                      <span className="text-zinc-600 text-lg font-normal">:</span>
+                      <span className={isAwayWinner ? awayWinColor : 'text-zinc-100'}>
                         {awayScore}
                       </span>
                     </div>
                     {m.penalties && (
-                      <span className="text-[10px] font-numbers text-[#8b949e] mt-1">
-                        pen. {isRiverHome ? m.penalties.river : m.penalties.boca} - {isRiverHome ? m.penalties.boca : m.penalties.river}
+                      <span className="text-[10px] font-numbers font-medium text-emerald-400 mt-1">
+                        Pen. {isRiverHome ? m.penalties.river : m.penalties.boca}–{isRiverHome ? m.penalties.boca : m.penalties.river}
                       </span>
                     )}
                   </div>
 
                   {/* VISITANTE (Derecha) */}
-                  <div className="flex items-center gap-3 text-right flex-row-reverse">
-                    <img src={awayCrest} alt={awayTeamName} className="w-10 h-12 object-contain drop-shadow" />
-                    <div>
-                      <div className="flex items-center justify-end gap-1.5">
-                        <span className="text-[9px] uppercase tracking-wider font-extrabold px-1.5 py-0.2 rounded bg-[#21262d] text-[#8b949e] border border-[#30363d]">
+                  <div className="flex items-center gap-3 text-right flex-row-reverse min-w-0">
+                    <div className="w-11 h-11 rounded-xl bg-zinc-900/90 border border-white/[0.06] flex items-center justify-center p-1.5 shrink-0">
+                      <img src={awayCrest} alt={awayTeamName} className="w-full h-full object-contain" />
+                    </div>
+                    <div className="min-w-0">
+                      <div className="flex items-center justify-end gap-1.5 flex-wrap">
+                        <span className="text-[9px] uppercase tracking-wider font-bold px-1.5 py-0.5 rounded bg-zinc-800/80 text-zinc-400 border border-white/[0.06] shrink-0">
                           Visita
                         </span>
-                        <span className={`font-bold text-sm block text-white ${awayHoverColor} transition`}>
+                        <span className={`font-bold text-sm truncate ${isAwayWinner ? 'text-zinc-50' : 'text-zinc-300'}`}>
                           {awayTeamName}
                         </span>
                       </div>
-                      <span className="text-xs text-[#8b949e] line-clamp-1 max-w-[130px] sm:max-w-[150px]">
+                      <span className="text-xs text-zinc-400 truncate block mt-0.5">
                         {awayGoals.length > 0 ? awayGoals.map(g => g.player).join(', ') : 'Sin goles'}
                       </span>
                     </div>
@@ -262,13 +272,13 @@ export const DecadeFilterView: React.FC<DecadeFilterViewProps> = ({ onSelectMatc
                 </div>
 
                 {/* Footer */}
-                <div className="pt-3 mt-3 border-t border-[#21262d] flex items-center justify-between text-[11px] text-[#8b949e]">
-                  <span className="truncate max-w-[200px] sm:max-w-[280px]">{m.stadium}</span>
-                  <span className="font-semibold text-white/70 group-hover:text-white flex items-center gap-1 transition">
-                    Ver detalles <ChevronRight className="w-3.5 h-3.5" />
+                <div className="pt-3.5 mt-4 border-t border-white/[0.06] flex items-center justify-between text-xs text-zinc-400">
+                  <span className="truncate max-w-[210px] sm:max-w-[280px]">{m.stadium}</span>
+                  <span className="font-medium text-zinc-300 group-hover:text-zinc-50 flex items-center gap-1 transition-colors">
+                    Ficha técnica <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
                   </span>
                 </div>
-              </div>
+              </article>
             );
           })}
         </div>

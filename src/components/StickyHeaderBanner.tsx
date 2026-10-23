@@ -10,14 +10,13 @@ interface StickyHeaderBannerProps {
 export const StickyHeaderBanner: React.FC<StickyHeaderBannerProps> = ({
   title,
   subtitle,
-  category = 'Superclásico Argentino'
 }) => {
   const [copied, setCopied] = useState(false);
 
   const handleShare = async () => {
     const shareData = {
       title: 'Historia de Bover | Superclásico Boca vs River',
-      text: 'Explorá todas las estadísticas, partidos y alineaciones históricas de Boca Juniors y River Plate.',
+      text: 'Explorá todas las estadísticas, los 266 partidos oficiales y alineaciones históricas de Boca Juniors y River Plate.',
       url: window.location.href,
     };
 
@@ -35,57 +34,50 @@ export const StickyHeaderBanner: React.FC<StickyHeaderBannerProps> = ({
       setCopied(true);
       setTimeout(() => setCopied(false), 2500);
     } catch {
-      // Ignorar error
+      // Ignore error
     }
   };
 
   return (
-    <div className="relative border-b border-[#21262d] bg-gradient-to-b from-[#161b22]/80 to-[#0d1117] py-8 sm:py-12">
+    <div className="relative z-10 border-b border-white/[0.07] bg-gradient-to-b from-zinc-900/40 to-transparent py-10 sm:py-14">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
           
-          <div className="space-y-2 max-w-3xl">
-            <div className="flex items-center gap-2">
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold uppercase tracking-wider bg-[#21262d] text-[#8b949e] border border-[#30363d]">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#fdbb30]"></span>
-                <span className="w-1.5 h-1.5 rounded-full bg-[#c91024]"></span>
-                {category}
-              </span>
+          <div className="space-y-3 max-w-3xl">
+            {/* Línea de acento dual Boca / River sutil y geométrica (sin eyebrow text) */}
+            <div className="flex items-center gap-1.5 mb-3">
+              <span className="h-1 w-7 rounded-full bg-[#facc15]" />
+              <span className="h-1 w-7 rounded-full bg-[#e11d48]" />
             </div>
 
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight">
+            <h1 className="text-3xl sm:text-4xl lg:text-[44px] font-black text-zinc-50 tracking-[-0.03em] leading-[1.1] text-balance">
               {title}
             </h1>
 
-            <p className="text-sm sm:text-base text-[#8b949e] leading-relaxed font-normal pt-1">
+            <p className="text-sm sm:text-base text-zinc-400 leading-relaxed font-normal max-w-[65ch]">
               {subtitle}
             </p>
           </div>
 
-          {/* Share Button con Tooltip idéntico a grenal.org */}
-          <div className="relative self-start md:self-center">
+          {/* Share Button */}
+          <div className="relative self-start md:self-end">
             <button
               onClick={handleShare}
-              className="flex items-center gap-2 px-4 py-2.5 bg-[#21262d] hover:bg-[#30363d] text-white border border-[#30363d] rounded-lg text-sm font-semibold transition active:scale-95 shadow-sm"
+              className="flex items-center gap-2 px-4 py-2.5 bg-zinc-900 hover:bg-zinc-800 text-zinc-100 border border-white/[0.09] hover:border-white/[0.18] rounded-xl text-xs sm:text-sm font-medium ui-pressable"
               title="Compartir página"
             >
               {copied ? (
                 <>
                   <Check className="w-4 h-4 text-emerald-400" />
-                  <span className="text-emerald-400 font-medium">¡Copiado!</span>
+                  <span className="text-emerald-400 font-medium">Enlace copiado</span>
                 </>
               ) : (
                 <>
-                  <Share2 className="w-4 h-4 text-[#8b949e]" />
-                  <span>Compartir</span>
+                  <Share2 className="w-4 h-4 text-zinc-400" />
+                  <span>Compartir archivo</span>
                 </>
               )}
             </button>
-            {copied && (
-              <div className="absolute top-full mt-2 left-1/2 -translate-x-1/2 px-2.5 py-1 bg-emerald-950 border border-emerald-500/30 text-emerald-300 text-xs rounded shadow-lg whitespace-nowrap z-30 animate-fadeIn">
-                Enlace copiado al portapapeles
-              </div>
-            )}
           </div>
 
         </div>

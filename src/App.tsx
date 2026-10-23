@@ -16,7 +16,7 @@ import { SearchModal } from './components/SearchModal';
 import { ApiStatusModal } from './components/ApiStatusModal';
 import { Footer } from './components/Footer';
 import { SUPERCLASICOS } from './data/superclasicos';
-import { Match, PlayerStats, CoachStats } from './types';
+import { Match, PlayerStats } from './types';
 
 export function App() {
   const [currentTab, setCurrentTab] = useState<string>('home');
@@ -25,7 +25,7 @@ export function App() {
   const [selectedMatch, setSelectedMatch] = useState<Match | null>(null);
   const [selectedPlayer, setSelectedPlayer] = useState<PlayerStats | null>(null);
 
-  // Escuchar atajo de teclado Ctrl+K o Cmd+K para abrir buscador
+  // Escuchar atajo de teclado Ctrl+K o Cmd+K para abrir buscador (Instantáneo según filosofía Emil Kowalski)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
@@ -43,38 +43,32 @@ export function App() {
       case 'partidos':
         return {
           title: 'Superclásicos de Boca vs River',
-          subtitle: 'Historial completo de todos los partidos oficiales organizados por décadas, torneos y resultados.',
-          category: 'Partidas Oficiales'
+          subtitle: 'Archivo histórico completo de los 266 partidos oficiales organizados por décadas, torneos y resultados.',
         };
       case 'jugadores':
         return {
           title: 'Goleadores y Presencias Históricas',
-          subtitle: 'El ranking de todos los futbolistas que forjaron la mística del Superclásico.',
-          category: 'Índice de Jugadores'
+          subtitle: 'El índice estadístico de los futbolistas que forjaron la mística centenaria del Superclásico.',
         };
       case 'tecnicos':
         return {
           title: 'Directores Técnicos del Superclásico',
-          subtitle: 'Estrategias, títulos directos, récords y efectividad desde el banco de suplentes.',
-          category: 'Índice de Técnicos'
+          subtitle: 'Estrategias, duelos directos, récords de imbatibilidad y efectividad desde el banco de suplentes.',
         };
       case 'historial':
         return {
           title: 'Historial y Desglose Estadístico',
-          subtitle: 'Análisis detallado por torneos locales, copas nacionales, competencias internacionales y estadios.',
-          category: 'Estadísticas Avanzadas'
+          subtitle: 'Radiografía comparativa por torneos de liga, copas nacionales, competencias internacionales y estadios.',
         };
       case 'sobre':
         return {
           title: 'Sobre Historia de Bover',
-          subtitle: 'El origen del término Bover, la historia del Superclásico y las fuentes oficiales utilizadas.',
-          category: 'Acerca del Proyecto'
+          subtitle: 'El origen cultural del término Bover, la historia barrial del clásico y las fuentes oficiales de datos.',
         };
       default:
         return {
           title: 'Bover, Historia y Estadísticas',
-          subtitle: 'Partidos, alineaciones, goles y estadísticas del mayor clásico del fútbol mundial, el superclásico Boca vs River.',
-          category: 'Página Principal'
+          subtitle: 'Archivo interactivo de partidos, alineaciones, goles y métricas del mayor clásico del fútbol mundial: Boca Juniors vs River Plate.',
         };
     }
   };
@@ -82,9 +76,12 @@ export function App() {
   const bannerData = getBannerData();
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#0b0e14] text-[#e6edf3]">
+    <div className="min-h-screen flex flex-col bg-[#09090b] text-zinc-50 relative selection:bg-[#facc15]/20 selection:text-[#facc15]">
       
-      {/* Header Fijo con Buscador y Navegación idéntico a grenal.org */}
+      {/* Sutil iluminación ambiental superior con acentos Boca (Azul/Oro) y River (Carmesí) sobre lienzo neutro */}
+      <div className="pointer-events-none fixed inset-x-0 top-0 h-[420px] bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(10,37,88,0.22),rgba(225,29,72,0.08),transparent)] z-0" />
+
+      {/* Header Fijo con Buscador y Navegación de Precisión */}
       <Header
         currentTab={currentTab}
         onSelectTab={setCurrentTab}
@@ -92,18 +89,17 @@ export function App() {
         onOpenApiStatus={() => setApiModalOpen(true)}
       />
 
-      {/* Sub-Header Banner idéntico a grenal.org con títulos y botón de compartir */}
+      {/* Sub-Header Editorial con títulos balanceados y botón de compartir */}
       <StickyHeaderBanner
         title={bannerData.title}
         subtitle={bannerData.subtitle}
-        category={bannerData.category}
       />
 
       {/* Contenido Principal */}
-      <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+      <main className="relative z-10 flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
         {currentTab === 'home' && (
-          <>
-            {/* Sección 1: Números (Highlights & Donut Chart & Goles Bar) */}
+          <div className="space-y-16 animate-fadeIn">
+            {/* Sección 1: Números (Highlights, Donut Chart & Goles Bar) */}
             <NumbersSection />
 
             {/* Sección 2: Últimos Superclásicos */}
@@ -135,7 +131,7 @@ export function App() {
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
             />
-          </>
+          </div>
         )}
 
         {currentTab === 'partidos' && (

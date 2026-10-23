@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Database, CheckCircle, RefreshCw, Key, ShieldCheck, AlertCircle, ExternalLink } from 'lucide-react';
+import { X, Database, CheckCircle, RefreshCw, Key, AlertCircle, ExternalLink } from 'lucide-react';
 import { checkApiHealth, syncExternalData, ApiStatus } from '../services/api';
 
 interface ApiStatusModalProps {
@@ -24,6 +24,16 @@ export const ApiStatusModal: React.FC<ApiStatusModalProps> = ({
     }
   }, [isOpen]);
 
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isOpen) {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
+
   const loadHealth = async () => {
     const data = await checkApiHealth();
     setStatus(data);
@@ -47,71 +57,77 @@ export const ApiStatusModal: React.FC<ApiStatusModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fadeIn">
-      <div className="relative w-full max-w-xl bg-[#161b22] border border-[#30363d] rounded-2xl shadow-2xl p-6 sm:p-8 text-left">
+    <div
+      onClick={onClose}
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-backdrop"
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="relative w-full max-w-xl bg-[#121215] border border-white/[0.1] rounded-2xl shadow-2xl p-6 sm:p-8 text-left animate-modal"
+      >
         
         {/* Botón Cerrar */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 p-1.5 text-[#8b949e] hover:text-white rounded-lg hover:bg-[#21262d] transition"
+          className="absolute top-4 right-4 p-1.5 text-zinc-400 hover:text-zinc-100 rounded-lg hover:bg-zinc-800 ui-pressable"
           aria-label="Cerrar modal"
         >
-          <X className="w-5 h-5" />
+          <X className="w-4 h-4" />
         </button>
 
         {/* Encabezado */}
-        <div className="flex items-center gap-3 mb-6">
-          <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+        <div className="flex items-center gap-3.5 mb-6">
+          <div className="w-11 h-11 rounded-xl bg-emerald-500/10 border border-emerald-500/25 flex items-center justify-center text-emerald-400 shrink-0">
             <Database className="w-5 h-5" />
           </div>
           <div>
-            <h3 className="text-xl font-black text-white flex items-center gap-2">
-              Conexión a la API y Fuentes de Datos
+            <h3 className="text-lg sm:text-xl font-bold text-zinc-50 tracking-[-0.02em]">
+              Motor de Datos y Estado de API
             </h3>
-            <span className="text-xs text-[#8b949e]">
-              Gestor de datos oficiales de Historia de Bover
+            <span className="text-xs text-zinc-400">
+              Sincronización de registros históricos de Historia de Bover
             </span>
           </div>
         </div>
 
         {/* Estado Actual de la API */}
-        <div className="p-4 rounded-xl bg-[#0d1117] border border-[#21262d] space-y-3 mb-6">
+        <div className="p-4 sm:p-5 rounded-xl bg-[#09090b] border border-white/[0.07] space-y-3 mb-6">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-[#8b949e]">Estado del Servidor:</span>
-            <span className="flex items-center gap-1.5 text-xs font-bold text-emerald-400 bg-emerald-950/50 px-2.5 py-1 rounded-full border border-emerald-500/20">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              API REST Activa (v{status?.version || '1.0.0'})
+            <span className="text-xs font-medium text-zinc-400">Estado del Servicio:</span>
+            <span className="flex items-center gap-1.5 text-xs font-semibold text-emerald-400 bg-emerald-950/50 px-2.5 py-1 rounded-lg border border-emerald-500/20 font-numbers">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              Activa · v{status?.version || '1.0.0'}
             </span>
           </div>
 
           <div className="flex items-center justify-between text-xs">
-            <span className="text-[#8b949e]">Partidos oficiales validados:</span>
-            <span className="font-numbers text-white font-bold">{status?.officialHistoryTotal || 266} partidos</span>
+            <span className="text-zinc-400">Partidos oficiales indexados:</span>
+            <span className="font-numbers text-zinc-100 font-bold">{status?.officialHistoryTotal || 266} encuentros</span>
           </div>
 
           <div className="flex items-center justify-between text-xs">
-            <span className="text-[#8b949e]">Última sincronización:</span>
-            <span className="font-numbers text-white">
-              {status ? new Date(status.lastSync).toLocaleString('es-AR') : 'Al día'}
+            <span className="text-zinc-400">Última verificación:</span>
+            <span className="font-numbers text-zinc-200">
+              {status ? new Date(status.lastSync).toLocaleString('es-AR') : 'Sincronizado'}
             </span>
           </div>
 
-          <div className="pt-2 border-t border-[#21262d]">
-            <span className="block text-[11px] font-bold uppercase tracking-wider text-[#8b949e] mb-1.5">
-              Fuentes Oficiales Conectadas:
+          <div className="pt-3 border-t border-white/[0.06]">
+            <span className="block text-[11px] font-semibold uppercase tracking-wider text-zinc-400 mb-2">
+              Fuentes Oficiales Validadas
             </span>
-            <ul className="space-y-1 text-xs text-[#e6edf3]">
-              <li className="flex items-center gap-1.5">
-                <CheckCircle className="w-3.5 h-3.5 text-emerald-400" />
-                <span>Asociación del Fútbol Argentino (AFA) - Registros 1913 a 2026</span>
+            <ul className="space-y-1.5 text-xs text-zinc-300">
+              <li className="flex items-center gap-2">
+                <CheckCircle className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                <span>Asociación del Fútbol Argentino (AFA) — Período 1913–2026</span>
               </li>
-              <li className="flex items-center gap-1.5">
-                <CheckCircle className="w-3.5 h-3.5 text-emerald-400" />
+              <li className="flex items-center gap-2">
+                <CheckCircle className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
                 <span>Rec.Sport.Soccer Statistics Foundation (RSSSF)</span>
               </li>
-              <li className="flex items-center gap-1.5">
-                <CheckCircle className="w-3.5 h-3.5 text-emerald-400" />
-                <span>Conector API-Football (Live Sync Boca #451 vs River #435)</span>
+              <li className="flex items-center gap-2">
+                <CheckCircle className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                <span>Conector API-Football (Boca #451 vs River #435)</span>
               </li>
             </ul>
           </div>
@@ -120,29 +136,26 @@ export const ApiStatusModal: React.FC<ApiStatusModalProps> = ({
         {/* Formulario de Conexión de API Externa */}
         <div className="space-y-4 mb-6">
           <div>
-            <label className="block text-xs font-bold text-white mb-1.5 flex items-center gap-1.5">
-              <Key className="w-3.5 h-3.5 text-[#fdbb30]" />
-              Clave de API Externa (API-Football / RapidAPI - Opcional):
+            <label className="block text-xs font-semibold text-zinc-200 mb-1.5 flex items-center gap-1.5">
+              <Key className="w-3.5 h-3.5 text-[#facc15]" />
+              Clave API-Football / RapidAPI (Opcional)
             </label>
             <input
               type="password"
               value={apiKey}
               onChange={(e) => setApiKey(e.target.value)}
-              placeholder="Ej: x-rapidapi-key (deja vacío para verificar base oficial)"
-              className="w-full bg-[#0d1117] border border-[#30363d] rounded-xl px-3.5 py-2 text-xs text-white placeholder-[#8b949e] focus:outline-none focus:border-white/40 font-mono"
+              placeholder="x-rapidapi-key (vacío para validar base local)"
+              className="w-full bg-[#09090b] border border-white/[0.09] rounded-xl px-3.5 py-2.5 text-xs text-zinc-100 placeholder-zinc-500 focus:outline-none focus:border-white/[0.25] font-numbers"
             />
-            <p className="text-[11px] text-[#8b949e] mt-1">
-              Permite sincronizar partidos recientes y futuros en vivo automáticamente desde API-Sports.
-            </p>
           </div>
 
           {message && (
             <div className={`p-3 rounded-xl border text-xs flex items-center gap-2 ${
               message.type === 'success'
                 ? 'bg-emerald-950/40 border-emerald-500/30 text-emerald-300'
-                : 'bg-red-950/40 border-red-500/30 text-red-300'
+                : 'bg-rose-950/40 border-rose-500/30 text-rose-300'
             }`}>
-              {message.type === 'success' ? <CheckCircle className="w-4 h-4" /> : <AlertCircle className="w-4 h-4" />}
+              {message.type === 'success' ? <CheckCircle className="w-4 h-4 shrink-0" /> : <AlertCircle className="w-4 h-4 shrink-0" />}
               <span>{message.text}</span>
             </div>
           )}
@@ -150,23 +163,23 @@ export const ApiStatusModal: React.FC<ApiStatusModalProps> = ({
           <button
             onClick={handleSync}
             disabled={syncing}
-            className="w-full py-2.5 bg-[#21262d] hover:bg-[#30363d] text-white font-bold text-xs rounded-xl border border-[#30363d] transition flex items-center justify-center gap-2 disabled:opacity-50"
+            className="w-full py-2.5 bg-zinc-100 hover:bg-white text-zinc-950 font-semibold text-xs rounded-xl ui-pressable flex items-center justify-center gap-2 disabled:opacity-50"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${syncing ? 'animate-spin' : ''}`} />
-            <span>{syncing ? 'Sincronizando datos...' : 'Verificar y Sincronizar Ahora'}</span>
+            <span>{syncing ? 'Verificando registros...' : 'Verificar y Sincronizar Ahora'}</span>
           </button>
         </div>
 
         {/* Footer info */}
-        <div className="text-[11px] text-[#8b949e] pt-3 border-t border-[#21262d] flex items-center justify-between">
-          <span>Modo Híbrido: Base Validada + Live Connector</span>
+        <div className="text-[11px] text-zinc-500 pt-3 border-t border-white/[0.06] flex items-center justify-between">
+          <span>Arquitectura híbrida: Base Histórica + Live Sync</span>
           <a
             href="https://www.api-football.com/"
             target="_blank"
             rel="noreferrer"
-            className="text-white/60 hover:text-white flex items-center gap-1 transition"
+            className="text-zinc-400 hover:text-zinc-200 flex items-center gap-1 transition-colors"
           >
-            Doc API-Football <ExternalLink className="w-3 h-3" />
+            API-Football <ExternalLink className="w-3 h-3" />
           </a>
         </div>
 
