@@ -1,6 +1,7 @@
 import { Match } from '../types';
+import { HISTORICAL_MATCHES_EXTENSION } from './historicalMatchesExtension';
 
-export const SUPERCLASICOS: Match[] = [
+const BASE_SUPERCLASICOS: Match[] = [
   {
     id: '266',
     number: 266,
@@ -1234,6 +1235,11 @@ export const SUPERCLASICOS: Match[] = [
     summary: 'El primer Superclásico oficial de la historia, disputado en la cancha de madera de Racing en Avellaneda. Victoria de River Plate por 2 a 1.'
   }
 ];
+
+export const SUPERCLASICOS: Match[] = [
+  ...BASE_SUPERCLASICOS,
+  ...HISTORICAL_MATCHES_EXTENSION
+].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
 export const TOTAL_STATS = {
   totalMatches: 266,
