@@ -33,6 +33,8 @@ export interface Match {
   tournament: string;
   competitionCategory: CompetitionCategory;
   stadium: string;
+  homeTeam?: 'boca' | 'river';
+  round?: string;
   referee?: string;
   attendance?: string;
   bocaScore: number;

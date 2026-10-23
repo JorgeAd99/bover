@@ -147,10 +147,14 @@ export const SearchModal: React.FC<SearchModalProps> = ({
                     className="p-2.5 rounded-lg bg-[#0d1117] hover:bg-[#21262d] cursor-pointer transition flex items-center justify-between border border-[#21262d]"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="flex items-center gap-1 font-numbers font-bold text-sm">
-                        <span className="text-white">Boca {m.bocaScore}</span>
+                      <div className="flex items-center gap-1.5 font-numbers font-bold text-sm">
+                        <span className="text-white">
+                          {m.homeTeam === 'river' ? 'River' : 'Boca'} (L) {m.homeTeam === 'river' ? m.riverScore : m.bocaScore}
+                        </span>
                         <span className="text-[#8b949e]">-</span>
-                        <span className="text-white">{m.riverScore} River</span>
+                        <span className="text-white">
+                          {m.homeTeam === 'river' ? m.bocaScore : m.riverScore} {m.homeTeam === 'river' ? 'Boca' : 'River'}
+                        </span>
                       </div>
                       <span className="text-xs text-[#8b949e] hidden sm:inline">
                         • {m.formattedDate} ({m.tournament})

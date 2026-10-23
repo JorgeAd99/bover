@@ -34,11 +34,28 @@ export const LastMatchesSection: React.FC<LastMatchesSectionProps> = ({
         </button>
       </div>
 
-      {/* Grid de Cards idéntico a grenal.org */}
+      {/* Grid de Cards idéntico a grenal.org con equipo local siempre a la izquierda */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {recentMatches.map((m) => {
-          const isBocaWinner = m.winner === 'boca';
-          const isRiverWinner = m.winner === 'river';
+          const isRiverHome = m.homeTeam === 'river';
+
+          // Datos del equipo LOCAL (a la izquierda)
+          const homeTeamName = isRiverHome ? 'River Plate' : 'Boca Juniors';
+          const homeCrest = isRiverHome ? '/crest-river.svg' : '/crest-boca.svg';
+          const homeScore = isRiverHome ? m.riverScore : m.bocaScore;
+          const homeGoals = isRiverHome ? m.riverGoals : m.bocaGoals;
+          const isHomeWinner = isRiverHome ? m.winner === 'river' : m.winner === 'boca';
+          const homeWinColor = isRiverHome ? 'text-[#ff4d5a]' : 'text-[#fdbb30]';
+          const homeHoverColor = isRiverHome ? 'group-hover:text-[#ff4d5a]' : 'group-hover:text-[#fdbb30]';
+
+          // Datos del equipo VISITANTE (a la derecha)
+          const awayTeamName = isRiverHome ? 'Boca Juniors' : 'River Plate';
+          const awayCrest = isRiverHome ? '/crest-boca.svg' : '/crest-river.svg';
+          const awayScore = isRiverHome ? m.bocaScore : m.riverScore;
+          const awayGoals = isRiverHome ? m.bocaGoals : m.riverGoals;
+          const isAwayWinner = isRiverHome ? m.winner === 'boca' : m.winner === 'river';
+          const awayWinColor = isRiverHome ? 'text-[#fdbb30]' : 'text-[#ff4d5a]';
+          const awayHoverColor = isRiverHome ? 'group-hover:text-[#fdbb30]' : 'group-hover:text-[#ff4d5a]';
 
           return (
             <div
@@ -58,54 +75,71 @@ export const LastMatchesSection: React.FC<LastMatchesSectionProps> = ({
                 </span>
               </div>
 
-              {/* Marcador central idéntico a grenal.org */}
+              {/* Marcador central: LOCAL A LA IZQUIERDA, VISITANTE A LA DERECHA */}
               <div className="flex items-center justify-between py-2 px-2">
                 
-                {/* Boca Juniors Side */}
-                <div className={`flex items-center gap-3 ${isBocaWinner ? 'opacity-100' : 'opacity-85'}`}>
+                {/* Equipo LOCAL (Izquierda) */}
+                <div className={`flex items-center gap-3 ${isHomeWinner ? 'opacity-100' : 'opacity-85'}`}>
                   <figure className="w-11 h-13 flex-shrink-0 flex items-center justify-center">
                     <img
-                      src="/crest-boca.svg"
-                      alt="Boca Juniors"
+                      src={homeCrest}
+                      alt={homeTeamName}
                       className="w-10 h-12 object-contain drop-shadow"
                     />
                   </figure>
                   <div>
-                    <span className="font-bold text-sm block text-white group-hover:text-[#fdbb30] transition">
-                      Boca Juniors
-                    </span>
-                    <span className="text-xs text-[#8b949e]">
-                      {m.bocaGoals.length > 0 ? `${m.bocaGoals.map(g => g.player).join(', ')}` : 'Sin goles'}
+                    <div className="flex items-center gap-1.5">
+                      <span className={`font-bold text-sm block text-white ${homeHoverColor} transition`}>
+                        {homeTeamName}
+                      </span>
+                      <span className="text-[9px] uppercase tracking-wider font-extrabold px-1.5 py-0.2 rounded bg-emerald-950/70 text-emerald-400 border border-emerald-500/30">
+                        Local
+                      </span>
+                    </div>
+                    <span className="text-xs text-[#8b949e] line-clamp-1 max-w-[130px] sm:max-w-[150px]">
+                      {homeGoals.length > 0 ? homeGoals.map(g => g.player).join(', ') : 'Sin goles'}
                     </span>
                   </div>
                 </div>
 
-                {/* Score Number Display */}
-                <div className="flex items-center gap-2.5 font-numbers text-2xl sm:text-3xl font-extrabold px-3 py-1 bg-[#0d1117] rounded-lg border border-[#21262d]">
-                  <span className={isBocaWinner ? 'text-[#fdbb30]' : 'text-white'}>
-                    {m.bocaScore}
-                  </span>
-                  <span className="text-[#484f58] text-xl font-normal">:</span>
-                  <span className={isRiverWinner ? 'text-[#ff4d5a]' : 'text-white'}>
-                    {m.riverScore}
-                  </span>
+                {/* Marcador Numérico Central (Local : Visitante) */}
+                <div className="flex flex-col items-center">
+                  <div className="flex items-center gap-2.5 font-numbers text-2xl sm:text-3xl font-extrabold px-3 py-1 bg-[#0d1117] rounded-lg border border-[#21262d]">
+                    <span className={isHomeWinner ? homeWinColor : 'text-white'}>
+                      {homeScore}
+                    </span>
+                    <span className="text-[#484f58] text-xl font-normal">:</span>
+                    <span className={isAwayWinner ? awayWinColor : 'text-white'}>
+                      {awayScore}
+                    </span>
+                  </div>
+                  {m.penalties && (
+                    <span className="text-[10px] font-numbers text-[#8b949e] mt-1">
+                      pen. {isRiverHome ? m.penalties.river : m.penalties.boca} - {isRiverHome ? m.penalties.boca : m.penalties.river}
+                    </span>
+                  )}
                 </div>
 
-                {/* River Plate Side */}
-                <div className={`flex items-center gap-3 text-right flex-row-reverse ${isRiverWinner ? 'opacity-100' : 'opacity-85'}`}>
+                {/* Equipo VISITANTE (Derecha) */}
+                <div className={`flex items-center gap-3 text-right flex-row-reverse ${isAwayWinner ? 'opacity-100' : 'opacity-85'}`}>
                   <figure className="w-11 h-13 flex-shrink-0 flex items-center justify-center">
                     <img
-                      src="/crest-river.svg"
-                      alt="River Plate"
+                      src={awayCrest}
+                      alt={awayTeamName}
                       className="w-10 h-12 object-contain drop-shadow"
                     />
                   </figure>
                   <div>
-                    <span className="font-bold text-sm block text-white group-hover:text-[#ff4d5a] transition">
-                      River Plate
-                    </span>
-                    <span className="text-xs text-[#8b949e]">
-                      {m.riverGoals.length > 0 ? `${m.riverGoals.map(g => g.player).join(', ')}` : 'Sin goles'}
+                    <div className="flex items-center justify-end gap-1.5">
+                      <span className="text-[9px] uppercase tracking-wider font-extrabold px-1.5 py-0.2 rounded bg-[#21262d] text-[#8b949e] border border-[#30363d]">
+                        Visita
+                      </span>
+                      <span className={`font-bold text-sm block text-white ${awayHoverColor} transition`}>
+                        {awayTeamName}
+                      </span>
+                    </div>
+                    <span className="text-xs text-[#8b949e] line-clamp-1 max-w-[130px] sm:max-w-[150px]">
+                      {awayGoals.length > 0 ? awayGoals.map(g => g.player).join(', ') : 'Sin goles'}
                     </span>
                   </div>
                 </div>
@@ -114,7 +148,7 @@ export const LastMatchesSection: React.FC<LastMatchesSectionProps> = ({
 
               {/* Footer con info de estadio */}
               <div className="pt-4 mt-2 border-t border-[#21262d] flex items-center justify-between text-[11px] text-[#8b949e]">
-                <span className="truncate">{m.stadium}</span>
+                <span className="truncate max-w-[200px] sm:max-w-[280px]">{m.stadium}</span>
                 <span className="text-xs font-semibold text-white/60 group-hover:text-white transition flex items-center gap-1">
                   Ver ficha completa <ArrowRight className="w-3 h-3" />
                 </span>

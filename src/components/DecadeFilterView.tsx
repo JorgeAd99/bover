@@ -58,35 +58,39 @@ export const DecadeFilterView: React.FC<DecadeFilterViewProps> = ({ onSelectMatc
           >
             {decadesList.map((d) => (
               <option key={d.decade} value={d.decade}>
-                {d.label} ({d.matches} partidos)
+                {d.decade} ({d.matches} partidos)
               </option>
             ))}
           </select>
         </div>
 
-        {/* Desktop Buttons Pills Grid */}
+        {/* Desktop Buttons Pills */}
         <div className="hidden sm:flex flex-wrap gap-2">
           {decadesList.map((d) => {
-            const isActive = d.decade === selectedDecade;
+            const isSelected = selectedDecade === d.decade;
             return (
               <button
                 key={d.decade}
                 onClick={() => setSelectedDecade(d.decade)}
-                className={`px-3.5 py-2 rounded-lg text-xs font-bold transition border ${
-                  isActive
-                    ? 'bg-[#21262d] text-white border-white/40 shadow-sm'
-                    : 'bg-[#161b22] text-[#8b949e] border-[#30363d] hover:text-white hover:bg-[#21262d]'
+                className={`px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${
+                  isSelected
+                    ? 'bg-white text-black shadow-lg scale-105'
+                    : 'bg-[#161b22] hover:bg-[#21262d] text-[#8b949e] hover:text-white border border-[#30363d]'
                 }`}
               >
-                {d.label}
+                <Calendar className="w-3.5 h-3.5" />
+                <span>{d.decade}</span>
+                <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-extrabold ${isSelected ? 'bg-black/10 text-black' : 'bg-[#21262d] text-[#8b949e]'}`}>
+                  {d.matches}
+                </span>
               </button>
             );
           })}
         </div>
       </div>
 
-      {/* Subfiltros adicionales: Competencia y Resultado */}
-      <div className="flex flex-wrap items-center gap-3 pt-2 pb-4 border-b border-[#21262d] text-xs">
+      {/* Filtros secundarios: Torneo y Resultado */}
+      <div className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-[#21262d] text-xs">
         
         {/* Filtro Competencia */}
         <div className="flex items-center gap-1 bg-[#161b22] p-1 rounded-lg border border-[#30363d]">
@@ -142,15 +146,15 @@ export const DecadeFilterView: React.FC<DecadeFilterViewProps> = ({ onSelectMatc
           </button>
           <button
             onClick={() => setSelectedWinner('draw')}
-            className={`px-2.5 py-1 rounded transition ${selectedWinner === 'draw' ? 'bg-[#484f58] text-white font-bold' : 'text-[#8b949e] hover:text-white'}`}
+            className={`px-2.5 py-1 rounded transition ${selectedWinner === 'draw' ? 'bg-[#30363d] text-white font-bold' : 'text-[#8b949e] hover:text-white'}`}
           >
-            Empates
+            Empate
           </button>
         </div>
 
       </div>
 
-      {/* Listado de Partidos idéntico a grenal.org */}
+      {/* Listado de Partidos idéntico a grenal.org con equipo Local a la izquierda */}
       {filteredMatches.length === 0 ? (
         <div className="py-16 text-center text-[#8b949e] bg-[#161b22]/30 rounded-2xl border border-[#30363d]">
           <Trophy className="w-8 h-8 mx-auto mb-2 opacity-50" />
@@ -160,8 +164,25 @@ export const DecadeFilterView: React.FC<DecadeFilterViewProps> = ({ onSelectMatc
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {filteredMatches.map((m) => {
-            const isBocaWinner = m.winner === 'boca';
-            const isRiverWinner = m.winner === 'river';
+            const isRiverHome = m.homeTeam === 'river';
+
+            // Datos equipo LOCAL (a la izquierda)
+            const homeTeamName = isRiverHome ? 'River Plate' : 'Boca Juniors';
+            const homeCrest = isRiverHome ? '/crest-river.svg' : '/crest-boca.svg';
+            const homeScore = isRiverHome ? m.riverScore : m.bocaScore;
+            const homeGoals = isRiverHome ? m.riverGoals : m.bocaGoals;
+            const isHomeWinner = isRiverHome ? m.winner === 'river' : m.winner === 'boca';
+            const homeWinColor = isRiverHome ? 'text-[#ff4d5a]' : 'text-[#fdbb30]';
+            const homeHoverColor = isRiverHome ? 'group-hover:text-[#ff4d5a]' : 'group-hover:text-[#fdbb30]';
+
+            // Datos equipo VISITANTE (a la derecha)
+            const awayTeamName = isRiverHome ? 'Boca Juniors' : 'River Plate';
+            const awayCrest = isRiverHome ? '/crest-boca.svg' : '/crest-river.svg';
+            const awayScore = isRiverHome ? m.bocaScore : m.riverScore;
+            const awayGoals = isRiverHome ? m.bocaGoals : m.riverGoals;
+            const isAwayWinner = isRiverHome ? m.winner === 'boca' : m.winner === 'river';
+            const awayWinColor = isRiverHome ? 'text-[#fdbb30]' : 'text-[#ff4d5a]';
+            const awayHoverColor = isRiverHome ? 'group-hover:text-[#fdbb30]' : 'group-hover:text-[#ff4d5a]';
 
             return (
               <div
@@ -181,42 +202,59 @@ export const DecadeFilterView: React.FC<DecadeFilterViewProps> = ({ onSelectMatc
                   </span>
                 </div>
 
-                {/* Marcador */}
+                {/* Marcador Central: LOCAL a la izquierda, VISITANTE a la derecha */}
                 <div className="flex items-center justify-between py-2 px-1">
                   
-                  {/* Boca */}
+                  {/* LOCAL (Izquierda) */}
                   <div className="flex items-center gap-3">
-                    <img src="/crest-boca.svg" alt="Boca" className="w-10 h-12 object-contain drop-shadow" />
+                    <img src={homeCrest} alt={homeTeamName} className="w-10 h-12 object-contain drop-shadow" />
                     <div>
-                      <span className="font-bold text-sm block text-white group-hover:text-[#fdbb30] transition">
-                        Boca Juniors
-                      </span>
-                      <span className="text-xs text-[#8b949e]">
-                        {m.bocaGoals.length > 0 ? m.bocaGoals.map(g => g.player).join(', ') : 'Sin goles'}
+                      <div className="flex items-center gap-1.5">
+                        <span className={`font-bold text-sm block text-white ${homeHoverColor} transition`}>
+                          {homeTeamName}
+                        </span>
+                        <span className="text-[9px] uppercase tracking-wider font-extrabold px-1.5 py-0.2 rounded bg-emerald-950/70 text-emerald-400 border border-emerald-500/30">
+                          Local
+                        </span>
+                      </div>
+                      <span className="text-xs text-[#8b949e] line-clamp-1 max-w-[130px] sm:max-w-[150px]">
+                        {homeGoals.length > 0 ? homeGoals.map(g => g.player).join(', ') : 'Sin goles'}
                       </span>
                     </div>
                   </div>
 
-                  {/* Score */}
-                  <div className="flex items-center gap-2 font-numbers text-2xl font-black px-3 py-1 bg-[#0d1117] rounded-lg border border-[#21262d]">
-                    <span className={isBocaWinner ? 'text-[#fdbb30]' : 'text-white'}>
-                      {m.bocaScore}
-                    </span>
-                    <span className="text-[#484f58]">:</span>
-                    <span className={isRiverWinner ? 'text-[#ff4d5a]' : 'text-white'}>
-                      {m.riverScore}
-                    </span>
+                  {/* Marcador Numérico */}
+                  <div className="flex flex-col items-center">
+                    <div className="flex items-center gap-2 font-numbers text-2xl font-black px-3 py-1 bg-[#0d1117] rounded-lg border border-[#21262d]">
+                      <span className={isHomeWinner ? homeWinColor : 'text-white'}>
+                        {homeScore}
+                      </span>
+                      <span className="text-[#484f58]">:</span>
+                      <span className={isAwayWinner ? awayWinColor : 'text-white'}>
+                        {awayScore}
+                      </span>
+                    </div>
+                    {m.penalties && (
+                      <span className="text-[10px] font-numbers text-[#8b949e] mt-1">
+                        pen. {isRiverHome ? m.penalties.river : m.penalties.boca} - {isRiverHome ? m.penalties.boca : m.penalties.river}
+                      </span>
+                    )}
                   </div>
 
-                  {/* River */}
+                  {/* VISITANTE (Derecha) */}
                   <div className="flex items-center gap-3 text-right flex-row-reverse">
-                    <img src="/crest-river.svg" alt="River" className="w-10 h-12 object-contain drop-shadow" />
+                    <img src={awayCrest} alt={awayTeamName} className="w-10 h-12 object-contain drop-shadow" />
                     <div>
-                      <span className="font-bold text-sm block text-white group-hover:text-[#ff4d5a] transition">
-                        River Plate
-                      </span>
-                      <span className="text-xs text-[#8b949e]">
-                        {m.riverGoals.length > 0 ? m.riverGoals.map(g => g.player).join(', ') : 'Sin goles'}
+                      <div className="flex items-center justify-end gap-1.5">
+                        <span className="text-[9px] uppercase tracking-wider font-extrabold px-1.5 py-0.2 rounded bg-[#21262d] text-[#8b949e] border border-[#30363d]">
+                          Visita
+                        </span>
+                        <span className={`font-bold text-sm block text-white ${awayHoverColor} transition`}>
+                          {awayTeamName}
+                        </span>
+                      </div>
+                      <span className="text-xs text-[#8b949e] line-clamp-1 max-w-[130px] sm:max-w-[150px]">
+                        {awayGoals.length > 0 ? awayGoals.map(g => g.player).join(', ') : 'Sin goles'}
                       </span>
                     </div>
                   </div>
@@ -225,7 +263,7 @@ export const DecadeFilterView: React.FC<DecadeFilterViewProps> = ({ onSelectMatc
 
                 {/* Footer */}
                 <div className="pt-3 mt-3 border-t border-[#21262d] flex items-center justify-between text-[11px] text-[#8b949e]">
-                  <span className="truncate">{m.stadium}</span>
+                  <span className="truncate max-w-[200px] sm:max-w-[280px]">{m.stadium}</span>
                   <span className="font-semibold text-white/70 group-hover:text-white flex items-center gap-1 transition">
                     Ver detalles <ChevronRight className="w-3.5 h-3.5" />
                   </span>
